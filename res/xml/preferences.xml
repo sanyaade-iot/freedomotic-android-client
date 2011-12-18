@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2011 Gabriel Pulido.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the GNU Public License v2.0
+  which accompanies this distribution, and is available at
+  http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+  
+  Contributors:
+      Gabriel Pulido - initial API and implementation
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="Freedom Server">
+        <EditTextPreference android:title="IP" android:key="server_ip" android:summary="Freedom Server IP"/>
+        <EditTextPreference android:title="Port" android:key="server_port" android:summary="Freedom Server Port"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Broker">
+        <EditTextPreference android:title="IP" android:key="broker_ip" android:summary="Broker IP"/>
+        <EditTextPreference android:title="Port" android:key="broker_port" android:summary="Broker port"/>
+    </PreferenceCategory>    
+</PreferenceScreen>

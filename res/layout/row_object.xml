@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2011 Gabriel Pulido.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the GNU Public License v2.0
+  which accompanies this distribution, and is available at
+  http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+  
+  Contributors:
+      Gabriel Pulido - initial API and implementation
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<ImageView android:id="@+id/icon" 
+		android:src="@drawable/ic_home" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_vertical|left"
+    	android:paddingRight="4dip"
+    	android:paddingLeft="2dip">
+	</ImageView>	    	    
+	<TextView 
+	    style="@style/RowText"
+	    android:text="@+id/TextView01" 
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:id="@+id/label"
+		android:layout_gravity="center_vertical|right"
+		>	    
+	</TextView>
+</LinearLayout>
