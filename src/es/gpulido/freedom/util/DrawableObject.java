@@ -27,6 +27,8 @@ public class DrawableObject extends DrawableElement{
 	private Bitmap ghostBitmap;
 	private Path ghostPath;
 	private Paint ghostPaint= new Paint();
+	//current scale/rotate matrix of the object
+	Matrix drawingMatrix = new Matrix();
 	
 	public DrawableObject(EnvObject envObject)
 	{
@@ -54,12 +56,15 @@ public class DrawableObject extends DrawableElement{
 	@Override
 	public void draw(Canvas canvas) {
         String file = getEnvObject().getCurrentRepresentation().getIcon();
+		drawingMatrix = new Matrix();
+		drawingMatrix.postRotate((float) getEnvObject().getCurrentRepresentation().getRotation());
+		drawingMatrix.postTranslate(getEnvObject().getCurrentRepresentation().getOffset().getX(), getEnvObject().getCurrentRepresentation().getOffset().getY());    		
         if (file!=null)
         {
             //TODO: Asign the bmp in the setEnvObject
         	Bitmap bmp =BitmapUtils.getImage(file,-1,-1);            
-            ghostBitmap =Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(),Config.ARGB_8888);//Bitmap.createBitmap(bmp);
-            canvas.drawBitmap(bmp, getEnvObject().getCurrentRepresentation().getOffset().getX(),getEnvObject().getCurrentRepresentation().getOffset().getY(), null);
+            ghostBitmap =Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(),Config.ARGB_8888);
+            canvas.drawBitmap(bmp,drawingMatrix,null);
         }
         else
         {
@@ -68,9 +73,6 @@ public class DrawableObject extends DrawableElement{
     		Paint paint = new Paint();
     		paint.setStyle(Style.FILL);
     		
-    		Matrix drawingMatrix = new Matrix();
-    		drawingMatrix.postRotate((float) getEnvObject().getCurrentRepresentation().getRotation());
-    		drawingMatrix.postTranslate(getEnvObject().getCurrentRepresentation().getOffset().getX(), getEnvObject().getCurrentRepresentation().getOffset().getY());    		
     		ghostPath = new Path();
     		objectPath.transform(drawingMatrix, ghostPath);
     		int fillColor=-1;
@@ -104,7 +106,7 @@ public class DrawableObject extends DrawableElement{
 		if (ghostBitmap!= null)
 		{			
 			ghostBitmap.eraseColor(indexColor);
-			canvas.drawBitmap(ghostBitmap,  getEnvObject().getCurrentRepresentation().getOffset().getX(),getEnvObject().getCurrentRepresentation().getOffset().getY(), null);
+			canvas.drawBitmap(ghostBitmap,drawingMatrix, null);
 		}
 		else
 		{			
