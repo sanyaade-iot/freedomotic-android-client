@@ -12,13 +12,19 @@ package es.gpulido.freedom.ui;
 
 
 
+import java.util.ArrayList;
+
 import it.freedom.model.object.Behavior;
 import it.freedom.model.object.BooleanBehavior;
 import it.freedom.model.object.EnvObject;
+import it.freedom.model.object.ListBehavior;
 import it.freedom.model.object.RangedIntBehavior;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -87,9 +93,26 @@ public class BehaviorListView extends LinearLayout {
 			holder.seekBar.setOnSeekBarChangeListener(mySeekBarChangeListener);
 			holder.seekBar.setVisibility(View.VISIBLE);			
 		}
-		else //it is a Multievaluated Behavior
+		else if (m_behavior instanceof ListBehavior)//it is a Multievaluated Behavior
 		{
-			//holder.imageView.setImageResource(R.drawable.ok);			
+			OnItemSelectedListener myOnItemSelectedListener = new OnItemSelectedListener(){
+
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View view,
+						int pos, long id) {
+					// TODO Auto-generated method stub					
+					String value = (String) parent.getItemAtPosition(pos);
+					String object =m_obj.getName();
+					String behavior = m_behavior.getName();
+					FreedomController.getInstance().changeBehavior(object, behavior, value);
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0) {
+					// TODO Auto-generated method stub
+					
+				}};			
+			holder.spinner.setOnItemSelectedListener(myOnItemSelectedListener);
 		}						
 		
 	}
@@ -132,9 +155,14 @@ public class BehaviorListView extends LinearLayout {
 				holder.seekBar.setProgress(beh.getValue());
 				//holder.imageView.setImageResource(R.drawable.ok);
 			}
-			else //it is a Multievaluated Behavior
-			{
-				//holder.imageView.setImageResource(R.drawable.ok);			
+			else if(m_behavior instanceof ListBehavior) //it is a Multievaluated Behavior
+			{				
+				holder.spinner.setVisibility(View.VISIBLE);
+				ListBehavior lb = (ListBehavior)m_behavior;
+				ArrayList<String> spinnerArray = lb.getList();				
+				ArrayAdapter<String>spinnerArrayAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerArray);										
+				holder.spinner.setAdapter(spinnerArrayAdapter);
+				holder.spinner.setSelection(lb.indexOfSelection());
 			}				
 	 }
 	

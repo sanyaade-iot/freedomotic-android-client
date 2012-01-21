@@ -55,9 +55,12 @@ public class DrawableObject extends DrawableElement{
 
 	@Override
 	public void draw(Canvas canvas) {
-        String file = getEnvObject().getCurrentRepresentation().getIcon();
-		drawingMatrix = new Matrix();
-		drawingMatrix.postRotate((float) getEnvObject().getCurrentRepresentation().getRotation());
+		System.out.println("drawing object: "+ getEnvObject().getName());
+		String file = getEnvObject().getCurrentRepresentation().getIcon();
+		drawingMatrix = new Matrix();		
+		float rotation = (float) getEnvObject().getCurrentRepresentation().getRotation();
+		System.out.println("rotation: "+ rotation);			
+		drawingMatrix.postRotate(rotation);
 		drawingMatrix.postTranslate(getEnvObject().getCurrentRepresentation().getOffset().getX(), getEnvObject().getCurrentRepresentation().getOffset().getY());    		
         if (file!=null)
         {

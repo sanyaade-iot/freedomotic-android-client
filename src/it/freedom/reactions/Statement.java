@@ -13,6 +13,7 @@ package it.freedom.reactions;
 
 import java.io.Serializable;
 
+
 /**
  *
  * @author Enrico
@@ -22,6 +23,8 @@ public class Statement implements Serializable {
     public static final String EQUALS = "EQUALS";
     public static final String GREATER_THEN = "GREATER_THEN";
     public static final String LESS_THEN = "LESS_THEN";
+    public static final String GREATER_EQUAL_THEN = "GREATER_EQUAL_THEN";
+    public static final String LESS_EQUAL_THEN = "LESS_EQUAL_THEN";
     public static final String REGEX = "REGEX";
     public static final String AND = "AND";
     public static final String OR = "OR";
@@ -79,7 +82,7 @@ public class Statement implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
-   
+
     @Override
     public String toString() {
         return attribute + " " + operand + " " + value;

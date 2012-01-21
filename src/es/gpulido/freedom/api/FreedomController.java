@@ -14,6 +14,7 @@ package es.gpulido.freedom.api;
 import it.freedom.model.object.Behavior;
 import it.freedom.model.object.BooleanBehavior;
 import it.freedom.model.object.EnvObject;
+import it.freedom.model.object.ListBehavior;
 import it.freedom.model.object.RangedIntBehavior;
 import it.freedom.model.object.Representation;
 import it.freedom.reactions.Payload;
@@ -91,9 +92,9 @@ public class FreedomController extends Observable  {
     private Listener myStompListener = new Listener()
     {	            
     	public void message(Map header, String message) {
-
+    		
     		Payload payload = FreedomController.parseMessage(message);
-    		EnvObject obj = getObject(payload.getStatements().get(0).getValue());
+    		EnvObject obj = getObject(payload.findAttribute("object.name").getValue());    		
     		    		
     		for (Statement st: payload.getStatements())
     		{
@@ -129,8 +130,13 @@ public class FreedomController extends Observable  {
     						setChanged();    						
     					}								 								 
     				}
-    				else //TODO: multievaluated behavior
-    				{}
+    				else if (bh instanceof ListBehavior)
+    				{
+    					String val = st.getValue();
+    					if (!val.equals(((ListBehavior)bh).getSelected()))
+    						((ListBehavior)bh).setSelected(val);
+    						setChanged();
+    				}
     			}    		
     		}
     		if (hasChanged())
@@ -146,7 +152,7 @@ public class FreedomController extends Observable  {
 			//stompClient= new Client("192.168.1.20", 61666, "", "" );
 			stompClient= new Client(Preferences.getBrokerIP(), Preferences.getBrokerPort(), "", "" );
 			//Init the listener
-			String queue="/topic/VirtualTopic.app.event.sensor.object.behavior.change";
+			String queue="/topic/VirtualTopic.app.event.sensor.object.behavior.change";			
 			stompClient.subscribe( queue, myStompListener);
     	    	
     	} catch (LoginException e) { 			
