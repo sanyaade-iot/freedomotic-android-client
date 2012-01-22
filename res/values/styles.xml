@@ -64,7 +64,7 @@
     </style>
     
     <style name="RowText">
-        <item name="android:textSize">3mm</item>        
+        <item name="android:textSize">3mm</item>               
     </style>
 
     <style name="DashboardButton">

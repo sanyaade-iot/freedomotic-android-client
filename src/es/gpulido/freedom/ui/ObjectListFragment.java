@@ -71,8 +71,8 @@ public class ObjectListFragment extends ListFragment implements Observer {
 	
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-	  	showDetails(position,false);   	   						
+	public void onListItemClick(ListView l, View v, int position, long id) {	  	
+		showDetails(position,false);	  	
 	}
 	
     /**
@@ -85,8 +85,8 @@ public class ObjectListFragment extends ListFragment implements Observer {
 
         if (mDualPane) {
             // We can display everything in-place with fragments, so update
-            // the list to highlight the selected item and show the data.
-            getListView().setItemChecked(index, true);
+            // the list to highlight the selected item and show the data.        	        	
+            getListView().setItemChecked(index, true);            
 
             // Check what fragment is currently shown, replace if needed.
             ObjectViewerFragment details = (ObjectViewerFragment)

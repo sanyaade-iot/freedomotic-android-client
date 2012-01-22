@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import es.gpulido.freedom.R;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class ObjectsAdapter extends ArrayAdapter<EnvObject> {
 	// static to save the reference to the outer class and to avoid access to
 	// any members of the containing class
 	static class ViewHolder {
-		public ImageView imageView;
+		//public ImageView imageView;
 		public TextView textView;
 	}
 
@@ -52,13 +53,12 @@ public class ObjectsAdapter extends ArrayAdapter<EnvObject> {
 		// Recycle existing view if passed as parameter
 		// This will save memory and time on Android
 		// This only works if the base layout for all classes are the same
-		View rowView = convertView;
+		View rowView = convertView;	
 		if (rowView == null) {
 			LayoutInflater inflater = context.getLayoutInflater();
 			rowView = inflater.inflate(R.layout.row_object, null, true);
 			holder = new ViewHolder();
 			holder.textView = (TextView) rowView.findViewById(R.id.label);
-			holder.imageView = (ImageView) rowView.findViewById(R.id.icon);
 			rowView.setTag(holder);
 		} else {
 			holder = (ViewHolder) rowView.getTag();
@@ -69,15 +69,16 @@ public class ObjectsAdapter extends ArrayAdapter<EnvObject> {
 		EnvObject obj =  items.get(position);
 		String type = obj.getType();
 		//TODO: Substitute this for a hot load of images from a directory
-		if (type.endsWith("Light"))
-			holder.imageView.setImageResource(R.drawable.ic_list_object_light);
+		Drawable img;
+		if (type.endsWith("Light"))			
+			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_light);			
 		else if(type.endsWith("TV"))
-			holder.imageView.setImageResource(R.drawable.ic_list_object_tv);
+			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_tv);			
 		else if(type.endsWith("ElectricDevice"))
-			holder.imageView.setImageResource(R.drawable.ic_list_object_electricdevice);				
+			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_electricdevice);						
 		else
-			holder.imageView.setImageResource(R.drawable.ic_list_object_default);
-
+			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_default);
+		holder.textView.setCompoundDrawablesWithIntrinsicBounds(img,null,null,null);	
 		return rowView;
 	}
 }

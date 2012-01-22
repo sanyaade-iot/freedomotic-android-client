@@ -9,23 +9,16 @@
   Contributors:
       Gabriel Pulido - initial API and implementation
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content" android:layout_height="wrap_content">
-	<ImageView android:id="@+id/icon" 
-		android:src="@drawable/ic_home" 
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_vertical|left"
-    	android:paddingRight="4dip"
-    	android:paddingLeft="2dip">
-	</ImageView>	    	    
-	<TextView 
-	    style="@style/RowText"
-	    android:text="@+id/TextView01" 
-	    android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:id="@+id/label"
-		android:layout_gravity="center_vertical|right"
-		>	    
-	</TextView>
-</LinearLayout>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/label"
+    style="@style/RowText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical|right"
+    android:paddingLeft="2dip"    
+    android:drawablePadding="4dip"
+    android:drawableLeft="@drawable/ic_home"
+    android:text="@+id/TextView01"
+    android:background="?android:attr/activatedBackgroundIndicator"  
+    >
+</TextView>
