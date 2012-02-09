@@ -8,7 +8,7 @@
   Contributors:
       Gabriel Pulido - initial API and implementation
 -->
-<es.gpulido.freedom.ui.widget.DashboardLayout
+<es.gpulido.freedomotic.ui.widget.DashboardLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -20,4 +20,8 @@
         style="@style/DashboardButton"
         android:text="@string/btn_map"
         android:drawableTop="@drawable/home_btn_map" />  
-</es.gpulido.freedom.ui.widget.DashboardLayout>
+    <Button android:id="@+id/home_btn_pageviewer"
+        style="@style/DashboardButton"
+        android:text="@string/btn_map"
+        android:drawableTop="@drawable/home_btn_map" />  
+</es.gpulido.freedomotic.ui.widget.DashboardLayout>

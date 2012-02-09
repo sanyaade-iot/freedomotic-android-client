@@ -19,7 +19,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">    
 
-    <fragment android:name="es.gpulido.freedom.ui.DashboardFragment"
+    <fragment android:name="es.gpulido.freedomotic.ui.DashboardFragment"
         android:id="@+id/fragment_dashboard"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

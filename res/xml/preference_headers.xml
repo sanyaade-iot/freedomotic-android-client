@@ -9,7 +9,7 @@
       Gabriel Pulido - initial API and implementation
 -->
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
-    <header android:fragment="es.gpulido.freedom.ui.preferences.StockPreferenceFragment"
+    <header android:fragment="es.gpulido.freedomotic.ui.preferences.StockPreferenceFragment"
             android:title="Connection"
             android:summary="Settings to connect to the servers">
       <extra android:name="resource" android:value="preferences"/>

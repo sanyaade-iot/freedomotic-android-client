@@ -14,7 +14,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">    
 
-    <fragment android:name="es.gpulido.freedom.ui.HousingPlanFragment"
+    <fragment android:name="es.gpulido.freedomotic.ui.HousingPlanFragment"
         android:id="@+id/fragment_housingplan"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

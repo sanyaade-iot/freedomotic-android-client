@@ -15,7 +15,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="es.gpulido.freedom"
+    package="es.gpulido.freedomotic"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -35,6 +35,7 @@
         <activity android:name=".ui.preferences.EditPreferencesHC"></activity>
         <activity android:name=".ui.preferences.EditPreferences"></activity>
         <activity android:name=".ui.ObjectsActivity"></activity>
-        <activity android:name=".ui.HousingPlanActivity"></activity>
+        <activity android:name="es.gpulido.freedomotic.ui.HousingPlanActivity"></activity>
+        <activity android:name=".ui.FreedomActivity"></activity>
     </application>
 </manifest>
