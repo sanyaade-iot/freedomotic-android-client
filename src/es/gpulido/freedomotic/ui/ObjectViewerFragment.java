@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import es.gpulido.freedomotic.R;
+import es.gpulido.freedomotic.api.EnvironmentController;
 import es.gpulido.freedomotic.api.FreedomController;
 
 public class ObjectViewerFragment extends Fragment implements Observer{
@@ -30,18 +31,23 @@ public class ObjectViewerFragment extends Fragment implements Observer{
      * Create a new instance of ObjectViewerFragment, initialized to
      * show the text at 'index'.
      */
-    public static ObjectViewerFragment newInstance(int index) {
+    public static ObjectViewerFragment newInstance(int roomIndex, int objectIndex) {
     	ObjectViewerFragment f = new ObjectViewerFragment();
 
         // Supply index input as an argument.
         Bundle args = new Bundle();
-        args.putInt("index", index);
+        args.putInt("roomIndex", roomIndex);
+        args.putInt("objectIndex", objectIndex);
         f.setArguments(args);
         return f;
     }
 
-    public int getShownIndex() {
-        return getArguments().getInt("index", 0);
+    public int getRoomIndex() {
+        return getArguments().getInt("roomIndex", 0);
+    }
+    
+    public int getObjectIndex() {
+        return getArguments().getInt("objectIndex", 0);
     }
            
     
@@ -61,9 +67,9 @@ public class ObjectViewerFragment extends Fragment implements Observer{
         }
      		    
         // Inflate the layout for this fragment
-     	if( FreedomController.getInstance().getObjectsNumber()!=0)
+     	if( EnvironmentController.getInstance().getRoom(getRoomIndex()).getObjects().size()!=0)
      	{
-	    	EnvObject object = FreedomController.getInstance().getObject(getShownIndex()); 
+	    	EnvObject object = EnvironmentController.getInstance().getRoom(getRoomIndex()).getObjects().get(getObjectIndex()); 
 	    	getActivity().setTitle(object.getName());
 	    	View vi = inflater.inflate(R.layout.view_object, container, false);
 	        ListView view = (ListView)vi.findViewById(R.id.list_behaviors);

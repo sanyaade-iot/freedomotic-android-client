@@ -1,16 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2011 Gabriel Pulido.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * 
- * Contributors:
- *     Gabriel Pulido - initial API and implementation
- ******************************************************************************/
 package es.gpulido.freedomotic.ui;
-
-
 import it.freedomotic.model.object.EnvObject;
 
 import java.util.ArrayList;
@@ -20,28 +8,59 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import es.gpulido.freedomotic.R;
+import es.gpulido.freedomotic.api.EnvironmentController;
 import es.gpulido.freedomotic.api.FreedomController;
 
-public class ObjectListFragment extends ListFragment implements Observer {
+public class ZoneObjectListFragment extends ListFragment {
 	boolean mDualPane;
-    int mCurCheckPosition = 0;    
+    int mCurCheckPosition = 0;        
+    int mRoomIndex =0;    
+    /**
+     * Create a new instance of CountingFragment, providing "num"
+     * as an argument.
+     */
+    static ZoneObjectListFragment newInstance(int roomIndex) {
+    	ZoneObjectListFragment f = new ZoneObjectListFragment();
 
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putInt("roomIndex", roomIndex);
+        f.setArguments(args);
+        return f;
+    }
+
+    
+    /**
+     * When creating, retrieve this instance's number from its arguments.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRoomIndex = getArguments() != null ? getArguments().getInt("roomIndex") : 1;
+    }
+     
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);	
-	    FreedomController.getInstance().addObserver(this);
-		setEmptyText("No data");
+	    super.onActivityCreated(savedInstanceState);		    	    	   	    
 		//TODO: Think where the refresh must be done
-		setData();	           
+		setData();
+		
+		//TODO: manage dualpanel
+	    // Populate list with our static array of titles.      
 		View detailsFrame = getActivity().findViewById(R.id.details);
         mDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 
          if (savedInstanceState != null) {
-             // Restore last state for checked position.
-             mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
+             // Restore last state for checked position.             
+        	 mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
+             
          }
 
          if (mDualPane) {
@@ -55,8 +74,8 @@ public class ObjectListFragment extends ListFragment implements Observer {
 	}
 	public void setData()
 	{
-		ArrayList<EnvObject> envObjectList = (ArrayList<EnvObject>)FreedomController.getInstance().getObjects();			    	   													
-		setListAdapter(new ObjectsAdapter(getActivity(), envObjectList));							
+		ArrayList<EnvObject> envObjectList = (ArrayList<EnvObject>)EnvironmentController.getInstance().getRoom(mRoomIndex).getObjects();			    	   													
+		setListAdapter(new ObjectsAdapter(getActivity(), envObjectList));
 	}
 
 	@Override
@@ -64,8 +83,6 @@ public class ObjectListFragment extends ListFragment implements Observer {
          super.onSaveInstanceState(outState);
          outState.putInt("curChoice", mCurCheckPosition);
      }
-
-	
 	
 
 	@Override
@@ -78,8 +95,8 @@ public class ObjectListFragment extends ListFragment implements Observer {
      * displaying a fragment in-place in the current UI, or starting a
      * whole new activity in which it is displayed.
      */
-	synchronized void showDetails(int index,boolean reload) {
-        mCurCheckPosition = index;
+	synchronized void showDetails(int index, boolean reload) {
+        mCurCheckPosition = index;        
 
         if (mDualPane) {
             // We can display everything in-place with fragments, so update
@@ -89,9 +106,9 @@ public class ObjectListFragment extends ListFragment implements Observer {
             // Check what fragment is currently shown, replace if needed.
             ObjectViewerFragment details = (ObjectViewerFragment)
                     getFragmentManager().findFragmentById(R.id.details);
-            if (details == null || details.getObjectIndex() != index ||reload==true) {
+            if (details == null || !(details.getObjectIndex()== index && details.getRoomIndex()==mRoomIndex)||reload==true) {
                 // Make new fragment to show this selection.
-                details = ObjectViewerFragment.newInstance(0,index);
+                details = ObjectViewerFragment.newInstance(mRoomIndex,index);
 
                 // Execute a transaction, replacing any existing fragment
                 // with this one inside the frame.
@@ -105,35 +122,10 @@ public class ObjectListFragment extends ListFragment implements Observer {
             // the dialog fragment with selected text.
             Intent intent = new Intent();
             intent.setClass(getActivity(), ObjectViewerActivity.class);
-            intent.putExtra("index", index);
+       
+            intent.putExtra("roomIndex", mRoomIndex);
+            intent.putExtra("objectIndex", index);
             startActivity(intent);
         }
 	}
-	
-	@Override
-	public void update(Observable observable, Object data) {		
-		
-		if (mDualPane)
-		{
-			ObjectViewerFragment details = (ObjectViewerFragment)
-	                    getFragmentManager().findFragmentById(R.id.details);
-			if (details!=null)
-			{
-				View view = details.getView();
-				view.post(new Runnable(){
-					@Override
-					public void run() {
-						ListView view2 = (ListView)getActivity().findViewById(R.id.list_behaviors);
-						((BehaviorsAdapter)view2.getAdapter()).notifyDataSetChanged();						
-					}});
-								
-			}
-						
-		}	
-	}	
-
 }
-	
-
-	
-

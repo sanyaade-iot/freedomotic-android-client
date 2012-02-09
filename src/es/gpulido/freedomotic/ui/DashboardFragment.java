@@ -59,7 +59,7 @@ public class DashboardFragment extends Fragment {
             public void onClick(View view) {//                
 //                startActivity(new Intent(getActivity(),
 //                        UIUtils.getMapActivityClass(getActivity())));
-            	startActivity(new Intent(getActivity(),FreedomActivity.class));            	 
+            	//startActivity(new Intent(getActivity(),FreedomActivity.class));            	 
             }
         });
         
