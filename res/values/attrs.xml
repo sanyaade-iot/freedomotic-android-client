@@ -36,9 +36,6 @@
             name="backgroundColorPressed"
             format="color" />
         <attr
-            name="textColor"
-            format="color" />
-        <attr
             name="textColorCenter"
             format="color" />
         <attr
@@ -58,9 +55,6 @@
             format="dimension" />
         <attr
             name="tabPaddingBottom"
-            format="dimension" />
-        <attr
-            name="textSize"
             format="dimension" />
         <attr
             name="outsideOffset"

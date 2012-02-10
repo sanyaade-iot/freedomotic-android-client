@@ -180,8 +180,7 @@ public class HousingPlanFragment extends Fragment implements Observer{
 		                         	
 			  //create all drawingrooms	 		 
 			  for (Zone r: EnvironmentController.getInstance().getRooms())
-			  {				  				  				  
-				  System.out.println("inserting :"+r.getName());
+			  {				  				  				  				  
 				  drawingRooms.add(new DrawableRoom(r,mPaint,textPaint));				  
 			  }
 			  //create all drawingObjects

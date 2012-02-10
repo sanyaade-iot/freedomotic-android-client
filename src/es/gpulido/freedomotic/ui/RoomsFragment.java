@@ -12,27 +12,27 @@ package es.gpulido.freedomotic.ui;
 
 
 
+import com.viewpagerindicator.TitlePageIndicator;
+import com.viewpagerindicator.TitleProvider;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.astuetz.viewpagertabs.ViewPagerTabProvider;
-import com.astuetz.viewpagertabs.ViewPagerTabs;
-
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
 
 public class RoomsFragment extends Fragment {
-    /** Called when the activity is first created. */
-	
+    	
 	public static int NUM_ITEMS = 1;
 
     MyAdapter mAdapter;
@@ -51,24 +51,20 @@ public class RoomsFragment extends Fragment {
          mPager.setAdapter(mAdapter);
       
          // Bind the ViewPager to ViewPagerTabs
-         ViewPagerTabs tabs = (ViewPagerTabs)vi.findViewById(R.id.tabs);
-         tabs.setViewPager(mPager);
-         tabs.setViewPager(mPager);
-////     tabs.setBackgroundColor(0x00FFFFFF);
-////     tabs.setBackgroundColorPressed(0x33333333);
-////     tabs.setTextColor(0x44A80000);
-////     tabs.setTextColorCenter(0xFFA80000);
-////     tabs.setLineColorCenter(0xFFA80000);
-////     tabs.setLineHeight(5);
-////     tabs.setTextSize(22);
-////     tabs.setTabPadding(5, 1, 5, 10);
-    	
-    	
+         TitlePageIndicator titleIndicator = (TitlePageIndicator)vi.findViewById(R.id.tabtitles);
+         titleIndicator.setViewPager(mPager);
+                         
     	return vi;
     }
+        
     
+    public int getCurrentItem()
+    {
+    	return mPager.getCurrentItem();
+    
+    }
          
-    public static class MyAdapter extends FragmentPagerAdapter implements ViewPagerTabProvider{
+    public static class MyAdapter extends FragmentPagerAdapter implements TitleProvider{
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -84,46 +80,12 @@ public class RoomsFragment extends Fragment {
         }
 
 		@Override
-		public String getTitle(int position) {
-			
+		public String getTitle(int position) {			
 			return EnvironmentController.getInstance().getRoom(position).getName().toUpperCase();			
 		}
     }
     
-    public static class ArrayListFragment extends ListFragment {
-        int mNum;
-
-        /**
-         * Create a new instance of CountingFragment, providing "num"
-         * as an argument.
-         */
-        static ArrayListFragment newInstance(int num) {
-            ArrayListFragment f = new ArrayListFragment();
-
-            // Supply num input as an argument.
-            Bundle args = new Bundle();
-            args.putInt("num", num);
-            f.setArguments(args);
-
-            return f;
-        }
-
-        /**
-         * When creating, retrieve this instance's number from its arguments.
-         */
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            mNum = getArguments() != null ? getArguments().getInt("num") : 1;
-        }
-
-
-        @Override
-        public void onListItemClick(ListView l, View v, int position, long id) {
-            Log.i("FragmentList", "Item clicked: " + id);
-        }
-    }
-    
+  
     
 	
 }

@@ -65,12 +65,14 @@ public class ObjectViewerFragment extends Fragment implements Observer{
             // the view hierarchy; it would just never be used.
             return null;
         }
-     		    
-        // Inflate the layout for this fragment
+    	//we need to now what is the current room being selected to autoupdate the details panel
+    	//TODO THIS IS WRONG!!! this must be on the RoomsFragment
+    	//RoomsFragment master = (RoomsFragment)getFragmentManager().findFragmentById(R.id.titles);
      	if( EnvironmentController.getInstance().getRoom(getRoomIndex()).getObjects().size()!=0)
      	{
+     		
 	    	EnvObject object = EnvironmentController.getInstance().getRoom(getRoomIndex()).getObjects().get(getObjectIndex()); 
-	    	getActivity().setTitle(object.getName());
+	    	getActivity().setTitle("roomIndex:"+getRoomIndex()+"objectIndex: "+ getObjectIndex()+"objectName: "+object.getName());
 	    	View vi = inflater.inflate(R.layout.view_object, container, false);
 	        ListView view = (ListView)vi.findViewById(R.id.list_behaviors);
 	    	view.setAdapter(new BehaviorsAdapter(getActivity(), object));

@@ -3,11 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-   <com.astuetz.viewpagertabs.ViewPagerTabs
-   android:id="@+id/tabs"
-   android:layout_width="fill_parent"
-   android:layout_height="wrap_content"
-   android:background="#FF3B3B3B" />
+  <com.viewpagerindicator.TitlePageIndicator
+	android:id="@+id/tabtitles"
+	android:layout_height="wrap_content"
+	android:layout_width="fill_parent" />
     <View
     android:layout_width="fill_parent"
     android:layout_height="2dip"

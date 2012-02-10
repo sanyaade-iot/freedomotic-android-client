@@ -26,10 +26,9 @@ public class ZoneObjectListFragment extends ListFragment {
      * Create a new instance of CountingFragment, providing "num"
      * as an argument.
      */
-    static ZoneObjectListFragment newInstance(int roomIndex) {
-    	ZoneObjectListFragment f = new ZoneObjectListFragment();
-
-        // Supply num input as an argument.
+     static ZoneObjectListFragment newInstance(int roomIndex) {
+    	ZoneObjectListFragment f = new ZoneObjectListFragment();    	 
+        // Supply num input as an argument.    	
         Bundle args = new Bundle();
         args.putInt("roomIndex", roomIndex);
         f.setArguments(args);
@@ -60,18 +59,23 @@ public class ZoneObjectListFragment extends ListFragment {
          if (savedInstanceState != null) {
              // Restore last state for checked position.             
         	 mCurCheckPosition = savedInstanceState.getInt("curChoice", 0);
+        	 mRoomIndex = savedInstanceState.getInt("mRoomIndex", 0);
              
          }
-
+         //TODO: Move to the onviewcreated
          if (mDualPane) {
              // In dual-pane mode, the list view highlights the selected item.
              getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            // getActivity().setTitle("roomIndex:"+mRoomIndex+"mCurCheckPosition: "+ mCurCheckPosition);
              // Make sure our UI is in the correct state.
-             showDetails(mCurCheckPosition,false);
-         }		
-		
+            RoomsFragment master = (RoomsFragment)getFragmentManager().findFragmentById(R.id.titles);
+            if (master.getCurrentItem()==mRoomIndex)
+            	showDetails(mCurCheckPosition,mRoomIndex,false);
+         }				
 		
 	}
+	 
+	
 	public void setData()
 	{
 		ArrayList<EnvObject> envObjectList = (ArrayList<EnvObject>)EnvironmentController.getInstance().getRoom(mRoomIndex).getObjects();			    	   													
@@ -82,12 +86,13 @@ public class ZoneObjectListFragment extends ListFragment {
      public void onSaveInstanceState(Bundle outState) {
          super.onSaveInstanceState(outState);
          outState.putInt("curChoice", mCurCheckPosition);
+         outState.putInt("curRoomIndex", mRoomIndex);
      }
 	
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {	  	
-		showDetails(position,false);	  	
+	public void onListItemClick(ListView l, View v, int position, long id) {		
+		showDetails(position,mRoomIndex,false);	  	
 	}
 	
     /**
@@ -95,37 +100,40 @@ public class ZoneObjectListFragment extends ListFragment {
      * displaying a fragment in-place in the current UI, or starting a
      * whole new activity in which it is displayed.
      */
-	synchronized void showDetails(int index, boolean reload) {
-        mCurCheckPosition = index;        
-
+	synchronized void showDetails(int index, int roomIndex, boolean reload) {
+        if (index!=-1)
+        	mCurCheckPosition = index;        
+        mRoomIndex = roomIndex;
         if (mDualPane) {
-            // We can display everything in-place with fragments, so update
-            // the list to highlight the selected item and show the data.        	        	
-            getListView().setItemChecked(index, true);            
+        	// We can display everything in-place with fragments, so update
+        	// the list to highlight the selected item and show the data.        	        	
+        	getListView().setItemChecked(index, true);            
 
-            // Check what fragment is currently shown, replace if needed.
-            ObjectViewerFragment details = (ObjectViewerFragment)
-                    getFragmentManager().findFragmentById(R.id.details);
-            if (details == null || !(details.getObjectIndex()== index && details.getRoomIndex()==mRoomIndex)||reload==true) {
-                // Make new fragment to show this selection.
-                details = ObjectViewerFragment.newInstance(mRoomIndex,index);
+        	// Check what fragment is currently shown, replace if needed.
+        	ObjectViewerFragment details = (ObjectViewerFragment)
+        			getFragmentManager().findFragmentById(R.id.details);
+        	RoomsFragment master = (RoomsFragment)getFragmentManager().findFragmentById(R.id.titles);              
+        	if (details == null || !(details.getObjectIndex()== mCurCheckPosition && details.getRoomIndex()==roomIndex)||reload==true        	            		
+        			&&master.getCurrentItem()==mRoomIndex) {
+        		// Make new fragment to show this selection.
+        		details = ObjectViewerFragment.newInstance(roomIndex,mCurCheckPosition);
 
-                // Execute a transaction, replacing any existing fragment
-                // with this one inside the frame.
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.details, details);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
-            }           
+        		// Execute a transaction, replacing any existing fragment
+        		// with this one inside the frame.
+        		FragmentTransaction ft = getFragmentManager().beginTransaction();
+        		ft.replace(R.id.details, details);
+        		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        		ft.commit();
+        	}           
         } else {
-            // Otherwise we need to launch a new activity to display
-            // the dialog fragment with selected text.
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), ObjectViewerActivity.class);
-       
-            intent.putExtra("roomIndex", mRoomIndex);
-            intent.putExtra("objectIndex", index);
-            startActivity(intent);
+        	// Otherwise we need to launch a new activity to display
+        	// the dialog fragment with selected text.
+        	Intent intent = new Intent();
+        	intent.setClass(getActivity(), ObjectViewerActivity.class);
+
+        	intent.putExtra("roomIndex", mRoomIndex);
+        	intent.putExtra("objectIndex", mCurCheckPosition);
+        	startActivity(intent);
         }
 	}
 }
