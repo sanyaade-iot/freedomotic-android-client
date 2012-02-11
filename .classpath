@@ -3,11 +3,13 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/home/gpt/Apps/android-sdk-linux/extras/android/support/v4/android-support-v4.jar"/>
 	<classpathentry kind="lib" path="/media/Volume1/Desarrollo/Eclipse/Freedomotic/freedomotic-android-client/lib/gozirra-0.4.1.jar"/>
 	<classpathentry kind="lib" path="/media/Volume1/Desarrollo/Eclipse/Freedomotic/freedomotic-android-client/lib/org.restlet.jar"/>
-	<classpathentry kind="lib" path="/media/Volume1/Desarrollo/Freedomotic/freedomotic/framework/freedomotic-model/dist/freedomotic-model.jar"/>
-	<classpathentry kind="lib" path="/media/Volume1/Desarrollo/Freedomotic/freedomotic/tools/RestApiInterfaces/dist/RestApiInterfaces.jar"/>
+	<classpathentry kind="lib" path="lib/actionbarsherlock-library-4.0.0-SNAPSHOT.zip"/>
+	<classpathentry kind="lib" path="lib/freedomotic-model.jar"/>
+	<classpathentry kind="lib" path="lib/RestApiInterfaces.jar"/>
+	<classpathentry kind="lib" path="lib/xstream-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/actionbarsherlock-plugin-support-lib-4.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK/JW-ViewPagerIndicator"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>

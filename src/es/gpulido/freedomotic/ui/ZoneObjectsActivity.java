@@ -1,12 +1,12 @@
 package es.gpulido.freedomotic.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import es.gpulido.freedomotic.R;
-import es.gpulido.freedomotic.ui.actionbar.ActionBarActivity;
 
 
 //TODO: unify with ObjectsActivity
-public class ZoneObjectsActivity extends ActionBarActivity {	
+public class ZoneObjectsActivity extends FragmentActivity {	
 	   @Override
 	   protected void onCreate(Bundle savedInstanceState) {
 	       super.onCreate(savedInstanceState);

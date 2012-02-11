@@ -11,11 +11,11 @@
 package es.gpulido.freedomotic.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import es.gpulido.freedomotic.R;
-import es.gpulido.freedomotic.ui.actionbar.ActionBarActivity;
 
 //Just a class to inflate the Objects Fragments 
-public class ObjectsActivity  extends ActionBarActivity{
+public class ObjectsActivity  extends FragmentActivity{
 	
 	   @Override
 	   protected void onCreate(Bundle savedInstanceState) {

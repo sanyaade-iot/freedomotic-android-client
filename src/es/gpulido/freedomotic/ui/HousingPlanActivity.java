@@ -11,20 +11,18 @@
 package es.gpulido.freedomotic.ui;
 
 import android.os.Bundle;
-import android.view.Menu;
+import android.support.v4.app.FragmentActivity;
 import es.gpulido.freedomotic.R;
-import es.gpulido.freedomotic.ui.actionbar.ActionBarActivity;
 
-public class HousingPlanActivity extends ActionBarActivity{
+public class HousingPlanActivity extends FragmentActivity{
 	
 	   @Override
-	   protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 	       super.onCreate(savedInstanceState);
 
 	       if (savedInstanceState == null) {
 	           // During initial setup, plug in the details fragment.
-	    	   setContentView(R.layout.activity_housingplan);
-	    	   
+	    	   setContentView(R.layout.activity_housingplan);	    	   
 	       }
 	   }
 }

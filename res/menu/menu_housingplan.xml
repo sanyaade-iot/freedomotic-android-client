@@ -12,7 +12,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/menu_fittoscreen"
         android:title="@string/menu_fittoscreeon"
-        android:icon="@drawable/ic_action_fittoscreen"
+        android:icon="@drawable/ic_action_fittoscreen_dark"
         android:orderInCategory="0"
         android:showAsAction="ifRoom"/>
 </menu>

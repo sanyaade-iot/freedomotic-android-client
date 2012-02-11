@@ -10,20 +10,26 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
+import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
-import es.gpulido.freedomotic.R;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 import es.gpulido.freedomotic.api.EnvironmentController;
 import es.gpulido.freedomotic.api.FreedomController;
-import es.gpulido.freedomotic.ui.actionbar.ActionBarActivity;
+import es.gpulido.freedomotic.ui.HousingPlanActivity;
+import es.gpulido.freedomotic.ui.ObjectsActivity;
 import es.gpulido.freedomotic.ui.preferences.EditPreferences;
 import es.gpulido.freedomotic.ui.preferences.EditPreferencesHC;
 import es.gpulido.freedomotic.ui.preferences.Preferences;
 
 //Main activity that holds the first screen fragments
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener{
 	//TODO: move to a constants class
 	private static final int ACTIVITY_PREFERENCES = 0;
 
@@ -39,24 +45,16 @@ public class MainActivity extends ActionBarActivity {
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 
-		// checkFirstRun();
+		//Set the navigation mode in the actionbar
+		//TODO: organize workflow
+//		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+//		SpinnerAdapter mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.locations,
+//		          android.R.layout.simple_spinner_dropdown_item);		
+//		getSupportActionBar().setListNavigationCallbacks(mSpinnerAdapter, this);				
 		readSettings();
 		setContentView(R.layout.activity_home);
 		update();
-
-		// findViewById(R.id.toggle_title).setOnClickListener(new
-		// View.OnClickListener() {
-		// @Override
-		// public void onClick(View view) {
-		// if (mAlternateTitle) {
-		// setTitle(R.string.app_name);
-		// } else {
-		// setTitle(R.string.alternate_title);
-		// }
-		// mAlternateTitle = !mAlternateTitle;
-		// }
-		// });
-
+		
 		// Initializes the alert dialog to be used later.
 		alertDialog = new AlertDialog.Builder(this).create();
 		alertDialog.setTitle(getString(R.string.error_dialog_title));
@@ -67,6 +65,18 @@ public class MainActivity extends ActionBarActivity {
 					}
 				});
 	}
+	
+	
+
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		// TODO Change this to Fragment replacement
+//		if (itemPosition == 0)
+//		//	startActivity(new Intent(this,ObjectsActivity.class));
+//		else
+//		//	startActivity(new Intent(this,HousingPlanActivity.class)); 
+		return false;
+	}
 
 	private void update() {
 		// TODO: move the string to resources
@@ -75,14 +85,14 @@ public class MainActivity extends ActionBarActivity {
 		new RefreshObjects().execute();
 	}
 
-	private void checkFirstRun() {
-		SharedPreferences sp = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		if (!sp.getBoolean("first_run", true)) {
-			launchPreferences();
-		}
-		sp.edit().putBoolean("first_run", false).commit();
-	}
+//	private void checkFirstRun() {
+//		SharedPreferences sp = PreferenceManager
+//				.getDefaultSharedPreferences(this);
+//		if (!sp.getBoolean("first_run", true)) {
+//			launchPreferences();
+//		}
+//		sp.edit().putBoolean("first_run", false).commit();
+//	}
 
 	private void readSettings() {
 		SharedPreferences prefs = PreferenceManager
@@ -118,9 +128,11 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater menuInflater = getMenuInflater();
+
+	
+	@Override	
+	public boolean onCreateOptionsMenu(Menu menu) {		
+		MenuInflater menuInflater= getSupportMenuInflater();
 		menuInflater.inflate(R.menu.main, menu);
 		// Calling super after populating the menu is necessary here to ensure
 		// that the action bar helpers have a chance to handle this event.
@@ -182,7 +194,7 @@ public class MainActivity extends ActionBarActivity {
 		// private final ProgressDialog dialog = new ProgressDialog(Main.this);
 		// can use UI thread here
 		protected void onPreExecute() {
-			getActionBarHelper().setRefreshActionItemState(true);
+			//getActionBarHelper().setRefreshActionItemState(true);
 		}
 
 		// automatically done on worker thread (separate from UI thread)
@@ -217,15 +229,16 @@ public class MainActivity extends ActionBarActivity {
 				// TODO:
 				alertDialog.setMessage(msg.getData().getString("msg"));
 				alertDialog.show();
-				getActionBarHelper().setRefreshActionItemState(false);
+				//getActionBarHelper().setRefreshActionItemState(false);
 				break;
 			default:
-				getActionBarHelper().setRefreshActionItemState(false);
+				//getActionBarHelper().setRefreshActionItemState(false);
 				break;
 
 			}
-			getActionBarHelper().setRefreshActionItemState(false);
+			//getActionBarHelper().setRefreshActionItemState(false);
 		}
 	}
+
 
 }
