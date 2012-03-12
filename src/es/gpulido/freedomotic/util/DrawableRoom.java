@@ -29,6 +29,7 @@ public class DrawableRoom extends DrawableElement{
 	private Paint ghostPaint;
 	private Path drawingPath;
 	private RectF bounds= new RectF();
+	public static final String TEXTURE_PATH = "texture/";
 	
 	public DrawableRoom(Zone roomObject, Paint borderPaint,Paint textPaint)
 	{
@@ -63,11 +64,12 @@ public class DrawableRoom extends DrawableElement{
 	
 	public void createFillingPaint()
 	{
-		if (!DrawingUtils.roomsBitmapsCache.containsKey(roomObject.getTexture()))			
-			DrawingUtils.roomsBitmapsCache.put(roomObject.getTexture(),BitmapUtils.downloadFile(Preferences.getResourcesURL() + roomObject.getTexture())); 		
+		String textureName = TEXTURE_PATH+roomObject.getTexture();
+		if (!DrawingUtils.roomsBitmapsCache.containsKey(textureName))			
+			DrawingUtils.roomsBitmapsCache.put(textureName,BitmapUtils.downloadFile(Preferences.getResourcesURL() + textureName)); 		
 		
-		fillingPaint = new Paint();
-		fillingPaint.setShader(new BitmapShader(DrawingUtils.roomsBitmapsCache.get(roomObject.getTexture()),Shader.TileMode.REPEAT,
+		fillingPaint = new Paint();		
+		fillingPaint.setShader(new BitmapShader(DrawingUtils.roomsBitmapsCache.get(textureName),Shader.TileMode.REPEAT,
               Shader.TileMode.REPEAT));		  		
 	}
 	public Paint getBorderPaint() {

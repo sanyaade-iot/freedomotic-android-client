@@ -67,7 +67,7 @@ import java.util.zip.GZIPInputStream;
  */
 public class BitmapUtils {
     private static final String TAG = "BitmapUtils";
-
+    //TODO: Allow user to clean cachedObject to update data
 	public static HashMap<String, Bitmap> cachedObjBitmap = new HashMap<String, Bitmap>();
     
 	//Helper class that downloads bitmap file from a url
@@ -96,8 +96,13 @@ public class BitmapUtils {
     
     public static Bitmap getImage(String icon, int width, int height) {
         String resizedImageKey = icon + "-" + width + "-" + height;
-        Bitmap img = cachedObjBitmap.get(resizedImageKey);
-        if (img == null) { //img not in cache	            	            	
+        Bitmap img;
+        if (cachedObjBitmap.containsKey(resizedImageKey))
+        {
+        	img = cachedObjBitmap.get(resizedImageKey);
+        }
+        else
+        {                	            	            
             img = BitmapUtils.downloadFile(Preferences.getServerString()+"/v1/resources/"+icon);
             if (img != null) {            //img just loaded from disk, cache it resized
                 if ((width <= 0) || (height <= 0)) {//resizing not needed
@@ -106,6 +111,11 @@ public class BitmapUtils {
                 	cachedObjBitmap.put(resizedImageKey, Bitmap.createScaledBitmap(img, width, height, true));	                    	
                 }
                 return img;
+            }
+            else //The image was not found on the server, mark it so it is not searched again.
+            {
+            	cachedObjBitmap.put(resizedImageKey, null);
+            	
             }
         }
         return img;

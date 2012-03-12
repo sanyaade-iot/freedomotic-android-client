@@ -13,6 +13,7 @@ package es.gpulido.freedomotic.ui;
 
 
 import java.util.ArrayList;
+import java.util.Observer;
 
 import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.BooleanBehavior;
@@ -32,9 +33,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import es.gpulido.freedomotic.R;
-import es.gpulido.freedomotic.api.FreedomController;
+import es.gpulido.freedomotic.api.FreedomoticController;
 
-public class BehaviorListView extends LinearLayout {
+public class BehaviorListView extends LinearLayout{
 	ViewHolder holder;
 	Behavior m_behavior;
 	EnvObject m_obj; // the envobject where the behavior belongs
@@ -58,7 +59,7 @@ public class BehaviorListView extends LinearLayout {
 
     				String object =m_obj.getName();
     				String behavior = m_behavior.getName();
-    				FreedomController.getInstance().changeBehavior(object, behavior, valueString);
+    				FreedomoticController.getInstance().changeBehavior(object, behavior, valueString);
     				//TODO: Feedback of the change;
     			}
     		};
@@ -85,7 +86,7 @@ public class BehaviorListView extends LinearLayout {
 						String value = String.valueOf(progress+beh.getMin());
 						String object =m_obj.getName();
 						String behavior = m_behavior.getName();
-						FreedomController.getInstance().changeBehavior(object, behavior, value);
+						FreedomoticController.getInstance().changeBehavior(object, behavior, value);
 					}
 
 				}
@@ -95,23 +96,24 @@ public class BehaviorListView extends LinearLayout {
 		}
 		else if (m_behavior instanceof ListBehavior)//it is a Multievaluated Behavior
 		{
-			OnItemSelectedListener myOnItemSelectedListener = new OnItemSelectedListener(){
+			OnItemSelectedListener myOnItemSelectedListener = new OnItemSelectedListener() {
 
-				@Override
 				public void onItemSelected(AdapterView<?> parent, View view,
-						int pos, long id) {
-					// TODO Auto-generated method stub					
+						int pos, long id)  {
 					String value = (String) parent.getItemAtPosition(pos);
 					String object =m_obj.getName();
 					String behavior = m_behavior.getName();
-					FreedomController.getInstance().changeBehavior(object, behavior, value);
+					FreedomoticController.getInstance().changeBehavior(object, behavior, value);
 				}
 
-				@Override
 				public void onNothingSelected(AdapterView<?> arg0) {
 					// TODO Auto-generated method stub
 					
-				}};			
+				}
+			
+			
+			
+			};
 			holder.spinner.setOnItemSelectedListener(myOnItemSelectedListener);
 		}						
 		

@@ -10,21 +10,20 @@
  ******************************************************************************/
 package es.gpulido.freedomotic.ui.preferences;
 
-
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+
 import es.gpulido.freedomotic.R;
+import es.gpulido.freedomotic.ui.MainActivity;
 
-public class EditPreferences extends PreferenceActivity {
-
-
-    @Override
+public class EditPreferences extends SherlockPreferenceActivity {
+	 @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTitle(R.string.preferences_title);
-        addPreferencesFromResource(R.xml.preferences);
+		 setTheme(MainActivity.THEME);		 
+		 super.onCreate(savedInstanceState);
+		 //TODO move the string to a resource
+		 getSupportActionBar().setTitle("Preferences");
+		 addPreferencesFromResource(R.xml.preferences);
     }
-    
 }

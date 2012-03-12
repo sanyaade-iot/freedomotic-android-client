@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -42,57 +43,62 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
-import es.gpulido.freedomotic.api.FreedomController;
+import es.gpulido.freedomotic.api.FreedomoticController;
+import es.gpulido.freedomotic.ui.base.IRefreshableFragment;
 import es.gpulido.freedomotic.util.DrawableElement;
 import es.gpulido.freedomotic.util.DrawableObject;
 import es.gpulido.freedomotic.util.DrawableRoom;
 import es.gpulido.freedomotic.util.DrawingUtils;
 
-public class HousingPlanFragment extends Fragment implements Observer{
+public class HousingPlanFragment extends SelectableObjectFragment implements Observer{
 	
 	InternalView myview;	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
-		myview = new InternalView(getActivity());		
+		myview = new InternalView(getSherlockActivity());		
 		return myview;
 	}
+//	
+//	@Override
+//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {	    		
+//	
+//		inflater.inflate(R.menu.menu_housingplan, menu);
+//		super.onCreateOptionsMenu(menu, inflater);		 		
+//	}
 	
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {	    		
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == R.id.menu_fittoscreen) {
+//        	myview.fitToScreen();
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 	
-		inflater.inflate(R.menu.menu_housingplan, menu);
-		super.onCreateOptionsMenu(menu, inflater);		 		
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_fittoscreen) {
-        	myview.fitToScreen();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-	
-	@Override
-	public void update(Observable observable, Object data) {		
-		myview.postInvalidate();
+	public void update(Observable observable, Object data) {						
+		if (observable.equals(FreedomoticController.getInstance()))
+			myview.postInvalidate();
+		else
+			myview.initialize();	     
+		
 	}
 
 	@Override
     public void onResume() {
-    	super.onResume();    	
-    	FreedomController.getInstance().addObserver(this); 
+    	super.onResume();
+    	FreedomoticController.getInstance().addObserver(this);
+    	EnvironmentController.getInstance().addObserver(this);
     };
     
     @Override
-    public void onPause() {    	
-    	FreedomController.getInstance().deleteObserver(this);
+    public void onPause() {    
+    	FreedomoticController.getInstance().deleteObserver(this);
+    	EnvironmentController.getInstance().addObserver(this);
     	super.onPause();    	
     };
-	    
-
+   
 
 ///////////////////////////////////////////////////
 
@@ -128,65 +134,86 @@ public class HousingPlanFragment extends Fragment implements Observer{
 		  private static final int MARGIN = 20;
 		  Bitmap lookup;
 		  Canvas ghostCanvas;
-		  
+		  boolean mInitialized = false;
 		  public InternalView(Context context){
 	            super(context);
 	      
-	            //TODO: solve the bug when env is null because the environment is not yet loaded
-	            
-	        Environment env = EnvironmentController.getInstance().getEnvironment();	        
-    		FreedomPolygon poly = env.getShape();		
-    		envPath =DrawingUtils.freedomPolygonToPath(poly);
-	            
-	          // Create our ScaleGestureDetector
-	          mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());			
-
-	          //Create all Paints to be used
-	  		  mPaint = new Paint();
-			  mPaint.setStrokeWidth(7.0f);  //7 pixel line width. TODO: Maybe we need to apply the scale
-			  mPaint.setColor(Color.DKGRAY); //tealish with no transparency
-			  mPaint.setStyle(Paint.Style.STROKE); //stroked, aka a line with no fill			  
-			  mPaint.setAntiAlias(true);		  
-
-			  environmentShadowPaint = new Paint();
-			  environmentShadowPaint.setStrokeWidth(50.0f);
-			  environmentShadowPaint.setColor(Color.BLACK);
-			  environmentShadowPaint.setAlpha(127);
-			  environmentShadowPaint.setStyle(Paint.Style.STROKE);
-			  environmentShadowPaint.setAntiAlias(true);
-			  
-			  environmentPaint = new Paint();
-			  environmentPaint.setStrokeWidth(33.0f);
-			  environmentPaint.setColor(Color.WHITE);
-			  environmentPaint.setStyle(Paint.Style.STROKE);
-			  environmentPaint.setAntiAlias(true);
-			  
-			  environmentPaint2 = new Paint();
-			  environmentPaint2.setStrokeWidth(30.0f);
-			  environmentPaint2.setColor(Color.LTGRAY);
-			  environmentPaint2.setStyle(Paint.Style.STROKE);
-			  environmentPaint2.setAntiAlias(true);
-
-	 		 Paint textPaint = new Paint();
-	 		 textPaint.setStrokeWidth(1);  //7 pixel line width. 
-	 		 textPaint.setTextSize(20);
-	 		 textPaint.setColor(Color.BLACK); //tealish with no transparency
-	 		 textPaint.setStyle(Paint.Style.STROKE); //stroked, aka a line with no fill			  
-	 		 textPaint.setAntiAlias(true);	  
-		                         	
-			  //create all drawingrooms	 		 
-			  for (Zone r: EnvironmentController.getInstance().getRooms())
-			  {				  				  				  				  
-				  drawingRooms.add(new DrawableRoom(r,mPaint,textPaint));				  
-			  }
-			  //create all drawingObjects
-			  for (EnvObject obj: FreedomController.getInstance().getObjects())
-			  {
-				  drawingObjects.add(new DrawableObject(obj));				  
-			  }
-			 	 
+	        	// Create our ScaleGestureDetector
+				mScaleDetector = new ScaleGestureDetector(context,
+						new ScaleListener());
+				initialize();
 		  }
-		  		  				  		  
+		  
+		protected void initialize() {
+			// TODO: solve the bug when env is null because the environment is
+			// not yet loaded
+			
+			if (EnvironmentController.getInstance().getEnvironment() != null) {
+
+				Environment env = EnvironmentController.getInstance()
+						.getEnvironment();
+				FreedomPolygon poly = env.getShape();
+				envPath = DrawingUtils.freedomPolygonToPath(poly);
+
+			
+
+				// Create all Paints to be used
+				mPaint = new Paint();
+				mPaint.setStrokeWidth(7.0f); // 7 pixel line width. TODO: Maybe
+												// we need to apply the scale
+				mPaint.setColor(Color.DKGRAY); // tealish with no transparency
+				mPaint.setStyle(Paint.Style.STROKE); // stroked, aka a line with
+														// no fill
+				mPaint.setAntiAlias(true);
+
+				environmentShadowPaint = new Paint();
+				environmentShadowPaint.setStrokeWidth(50.0f);
+				environmentShadowPaint.setColor(Color.BLACK);
+				environmentShadowPaint.setAlpha(127);
+				environmentShadowPaint.setStyle(Paint.Style.STROKE);
+				environmentShadowPaint.setAntiAlias(true);
+
+				environmentPaint = new Paint();
+				environmentPaint.setStrokeWidth(33.0f);
+				environmentPaint.setColor(Color.WHITE);
+				environmentPaint.setStyle(Paint.Style.STROKE);
+				environmentPaint.setAntiAlias(true);
+
+				environmentPaint2 = new Paint();
+				environmentPaint2.setStrokeWidth(30.0f);
+				environmentPaint2.setColor(Color.LTGRAY);
+				environmentPaint2.setStyle(Paint.Style.STROKE);
+				environmentPaint2.setAntiAlias(true);
+
+				Paint textPaint = new Paint();
+				textPaint.setStrokeWidth(1); // 7 pixel line width.
+				textPaint.setTextSize(20);
+				textPaint.setColor(Color.BLACK); // tealish with no transparency
+				textPaint.setStyle(Paint.Style.STROKE); // stroked, aka a line
+														// with no fill
+				textPaint.setAntiAlias(true);
+
+				// create all drawingrooms
+				for (Zone r : EnvironmentController.getInstance().getRooms()) {
+					drawingRooms.add(new DrawableRoom(r, mPaint, textPaint));
+					// TODO: Take care of the objects not in room
+					for (EnvObject obj : r.getObjects()) {
+						drawingObjects.add(new DrawableObject(obj));
+
+					}
+				}
+				// create all drawingObjects
+				// for (EnvObject obj:
+				// EnvironmentController.getInstance().getObjects())
+				// {
+				// drawingObjects.add(new DrawableObject(obj));
+				// }
+				 mInitialized = true;
+			} else {
+
+			}
+
+		}
 		  //Adapt the "original coordinates" from freedom to the android device size		  
 		  public void fitToScreen()
 		  {			  			  
@@ -209,6 +236,19 @@ public class HousingPlanFragment extends Fragment implements Observer{
 			  invalidate();
 
 		  }
+		  
+		  public void centerTo(float x, float y)
+		  {
+//			  int xSize =getWidth()-MARGIN*2; 
+//			  int ySize =getHeight()-MARGIN*2; 
+//			  int xSizeCenter = xSize/2;
+//			  int ySizeCenter = xSize/2;
+			  mPosX = x;
+			  mPosY = y;
+			  invalidate();			  			  
+		  }
+		  
+		  
 		  //Map of objects that are drawed
 		  HashMap<Integer,DrawableElement> objectsIndex;
 		  //Color that is used to represent no painting in the ghostCanvas
@@ -230,23 +270,30 @@ public class HousingPlanFragment extends Fragment implements Observer{
 	        @Override
 	        protected void onDraw(Canvas canvas) {
 	            super.onDraw(canvas);            	
-	            
-	            //TODO: figure out how to know the scale before the draw
-	            if (!transformed)
-            	{
-            		fitToScreen();	            	
-            		transformed=true;	            	
-            	}
-	            canvas.save();            	
-            	canvas.translate(mPosX, mPosY);
-            	canvas.scale(mScaleFactor, mScaleFactor);            	
-            	createGhostCanvas(canvas);	        	            	
-            	renderEnvironment(canvas);                   	
-            	renderRooms(canvas);            	
-            	renderObjects(canvas);
-            	ListView lview = new ListView(this.getContext());
-            	lview.draw(canvas);
-            	canvas.restore();				  	 
+	            if (mInitialized)
+		         {
+		            //TODO: figure out how to know the scale before the draw
+		            if (!transformed)
+	            	{
+	            		fitToScreen();	            	
+	            		transformed=true;	            	
+	            	}
+		            canvas.save();            	
+	            	canvas.translate(mPosX, mPosY);
+	            	canvas.scale(mScaleFactor, mScaleFactor);            	
+	            	createGhostCanvas(canvas);	        	            	
+	            	renderEnvironment(canvas);                   	
+	            	renderRooms(canvas);            	
+	            	renderObjects(canvas);
+	            	ListView lview = new ListView(this.getContext());
+	            	lview.draw(canvas);
+	            	canvas.restore();	
+		         }
+	            else
+	            {
+	        //    	initialize();
+	            	
+	            }
 	        }
 	        
 	        public void renderEnvironment(Canvas canvas)
@@ -294,10 +341,8 @@ public class HousingPlanFragment extends Fragment implements Observer{
 	                int pathIndex = lookup.getPixel(Math.round(x), Math.round(y));
 	                if( pathIndex != Color.BLACK)
 	                {
-	                	mLastElementTouch = objectsIndex.get(pathIndex);
-//	                	System.out.println("x,y"+ x+","+y+"pathIndex: "+ pathIndex);
-//		                System.out.println("x,y "+ x+","+y+ " realXY: "+ ev.getRawX()+","+ev.getRawY()+ "lookup: " +lookup.getPixel(Math.round(x), Math.round(y)));
-//		                System.out.println("Object : " +objectsIndex.get(pathIndex).getName());
+	                	mLastElementTouch = objectsIndex.get(pathIndex);	                	
+
 	                }
 	                else
 	                {
@@ -332,15 +377,12 @@ public class HousingPlanFragment extends Fragment implements Observer{
 	                mActivePointerId = INVALID_POINTER_ID;
 	                if (mLastElementTouch!= null)
 	                {
-	                    if (mLastElementTouch instanceof DrawableObject)
+	                    //we have touch an object
+	                	if (mLastElementTouch instanceof DrawableObject)
 	                    {
-		                	//TODO: Use fragments
-	                    	//TODO: Move to elsewere	                    		                    	
-	                    	Intent intent = new Intent();
-		                    intent.setClass(getActivity(), ObjectViewerActivity.class);
-		                    int index = FreedomController.getInstance().getObjectNumber(((DrawableObject)mLastElementTouch).getEnvObject());
-		                    intent.putExtra("index", index);
-		                    startActivity(intent);		                    
+		                	
+	                		mListener.onObjectSelected(((DrawableObject)mLastElementTouch).getEnvObject().getName(),null);
+	                		//centerTo( mLastTouchX,mLastTouchY);
 	                    }
 	                }
 	                mLastElementTouch = null;
@@ -384,5 +426,7 @@ public class HousingPlanFragment extends Fragment implements Observer{
 			    }
 			}
 	    }
+
+
 	 
 }

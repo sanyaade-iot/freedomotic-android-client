@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.viewpagerindicator.TitlePageIndicator
+        android:id="@+id/tabtitles"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        style="@style/CustomTitlePageIndicator"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dip"
+        android:background="#FF91A438" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/room_panel_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

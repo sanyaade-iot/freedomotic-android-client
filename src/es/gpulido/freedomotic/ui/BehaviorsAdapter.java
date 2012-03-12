@@ -28,18 +28,9 @@ public class BehaviorsAdapter extends ArrayAdapter<Behavior> {
 
 	public BehaviorsAdapter(Activity context, EnvObject object) {		
 		super(context, R.layout.row_behavior,object.getBehaviors());
-		//this.index = FreedomController.getInstance().getObjectNumber(object);
 		this.envObject=object;		
 	}
 
-	// static to save the reference to the outer class and to avoid access to
-	// any members of the containing class
-//	static class ViewHolder {
-//		public ToggleButton button;
-//		public SeekBar seekBar;
-//		public Spinner spinner;
-//		public TextView textView;
-//	}
 
 	public View getView(final int position, View convertView, ViewGroup parent) 
     {

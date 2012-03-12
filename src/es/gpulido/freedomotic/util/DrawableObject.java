@@ -21,6 +21,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
 
+
 public class DrawableObject extends DrawableElement{
 
 	private EnvObject envObject;
@@ -29,7 +30,7 @@ public class DrawableObject extends DrawableElement{
 	private Paint ghostPaint= new Paint();
 	//current scale/rotate matrix of the object
 	Matrix drawingMatrix = new Matrix();
-	
+	public static final String OBJECT_PATH = "object/";	
 	public DrawableObject(EnvObject envObject)
 	{
 		super();
@@ -54,20 +55,22 @@ public class DrawableObject extends DrawableElement{
 	}
 
 	@Override
-	public void draw(Canvas canvas) {
-		System.out.println("drawing object: "+ getEnvObject().getName());
+	public void draw(Canvas canvas) {		
 		String file = getEnvObject().getCurrentRepresentation().getIcon();
 		drawingMatrix = new Matrix();		
-		float rotation = (float) getEnvObject().getCurrentRepresentation().getRotation();
-		System.out.println("rotation: "+ rotation);			
+		float rotation = (float) getEnvObject().getCurrentRepresentation().getRotation();			
 		drawingMatrix.postRotate(rotation);
 		drawingMatrix.postTranslate(getEnvObject().getCurrentRepresentation().getOffset().getX(), getEnvObject().getCurrentRepresentation().getOffset().getY());    		
-        if (file!=null)
-        {
-            //TODO: Asign the bmp in the setEnvObject
-        	Bitmap bmp =BitmapUtils.getImage(file,-1,-1);            
-            ghostBitmap =Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(),Config.ARGB_8888);
-            canvas.drawBitmap(bmp,drawingMatrix,null);
+		Bitmap bmp=null;
+		if(file!=null)
+		{    		 //TODO: Asign the bmp in the setEnvObject
+        	 bmp =BitmapUtils.getImage(OBJECT_PATH+file,-1,-1);        
+		}
+		if (bmp!=null)
+        {                       
+         	ghostBitmap =Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(),Config.ARGB_8888);
+        	canvas.drawBitmap(bmp,drawingMatrix,null);
+    
         }
         else
         {

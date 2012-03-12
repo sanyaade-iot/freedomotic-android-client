@@ -18,12 +18,13 @@ import it.freedomotic.restapi.server.interfaces.EnvironmentResource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
+import java.util.Observer;
 
 import org.restlet.resource.ClientResource;
 
 import es.gpulido.freedomotic.ui.preferences.Preferences;
 
-public class EnvironmentController  extends Observable  {
+public class EnvironmentController  extends Observable implements Observer {
 
 	public static final int REST_ERROR = 1;
 	public static final int CONNECTED= 2;
@@ -32,6 +33,7 @@ public class EnvironmentController  extends Observable  {
 	private static EnvironmentResource resourceEnvironment;	
 	private Environment freedomEnvironment;
 	private ArrayList<Zone> rooms;
+	private HashMap<String,EnvObject> freedomObjectsDictionary;
 	private int roomsSize=0;
 		
 	 // Private constructor suppresses 
@@ -41,7 +43,7 @@ public class EnvironmentController  extends Observable  {
     // Sync creator to avoid multi-thread problems
     private static void createInstance() {
         if (INSTANCE == null) { 
-            INSTANCE = new EnvironmentController();
+            INSTANCE = new EnvironmentController();                    
         }
     }
  
@@ -54,6 +56,7 @@ public class EnvironmentController  extends Observable  {
     { 
     	if(!prepareRestResource())
     		return REST_ERROR;
+    	//FreedomoticController.getInstance().addObserver(this);   
     	return CONNECTED;
     }
          
@@ -70,14 +73,20 @@ public class EnvironmentController  extends Observable  {
 		freedomEnvironment =resourceEnvironment.retrieveEnvironment();
 		if (freedomEnvironment != null)
 		{
-			rooms= new ArrayList<Zone>();							
+			rooms= new ArrayList<Zone>();
+			freedomObjectsDictionary = new HashMap<String, EnvObject>();
 			for(Zone z: getZones())
 			{
 				if (z.isRoom())
-					{rooms.add(z);
-				System.out.println("room: "+z.getName()+ "number of rooms: " +rooms.size());}
+				{
+					rooms.add(z);
+				}
+				for (EnvObject obj: z.getObjects())
+					freedomObjectsDictionary.put(obj.getName(), obj);
 			}
-			roomsSize=rooms.size();			
+			roomsSize=rooms.size();
+			setChanged();
+			EnvironmentController.getInstance().notifyObservers();
 		}						
 		
 	}
@@ -100,5 +109,20 @@ public class EnvironmentController  extends Observable  {
 	{		
 		return rooms.get(roomNumber);		
 	}
+	
+	public EnvObject getObject(String objectName)
+	{			
+		return freedomObjectsDictionary.get(objectName);
+		
+	}
+
+	public void update(Observable observable, Object data) {
+		// If the data has changed
+		setChanged();
+		EnvironmentController.getInstance().notifyObservers();
+		
+	}
+	
+	
 }
 

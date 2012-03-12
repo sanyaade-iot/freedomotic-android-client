@@ -10,14 +10,14 @@
       Gabriel Pulido - initial API and implementation
 -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/label"
-    style="@style/RowText"
+    android:id="@+id/label"    
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical|right"
     android:paddingLeft="2dip"    
     android:drawablePadding="4dip"
     android:drawableLeft="@drawable/ic_home"
-    android:text="@+id/TextView01"   
+    android:text="@+id/TextView01"       
     >
+    <!--  style="@style/RowText"-->
 </TextView>

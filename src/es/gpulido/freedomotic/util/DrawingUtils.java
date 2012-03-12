@@ -22,6 +22,7 @@ import android.graphics.Path;
 public class DrawingUtils {
 
 	public static HashMap<String,Bitmap> roomsBitmapsCache = new HashMap<String,Bitmap>();
+		
 		//Helper class to transform from a FreedomPolygon to a Path
 	public static Path freedomPolygonToPath(FreedomPolygon fp)
 	{
@@ -43,40 +44,9 @@ public class DrawingUtils {
 	private static int blueValue=0;
 	
 	public static int generateNextValidColor()
-	{		
-//		blueValue++;
-//		if (blueValue>255)
-//		{
-//			blueValue=0;
-//			greenValue++;
-//			if (greenValue>255)
-//			{
-//				greenValue=0;
-//				redValue++;			
-//			}				
-//		}
-//		
-//		
-			
-		
-			
-		
+	{				
 		float step = 0x00000001;
-		//		if (config.equals(Config.ARGB_4444))
-//		{
-//			nextValidColor++;
-//		}
-//		else if (config.equals(Config.ARGB_8888))
-//		{
-//			
-//		}
-//		else if (config.equals(Config.RGB_565))
-//		{
-//			
-//			
-//		}
-		nextValidColor+=step;
-		System.out.println("int color:" + nextValidColor+ " , int: "+ (int)nextValidColor);
+		nextValidColor+=step;		
 		return (int)nextValidColor;
 		
 	}

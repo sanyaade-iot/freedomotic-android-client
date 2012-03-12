@@ -10,126 +10,125 @@
  ******************************************************************************/
 package es.gpulido.freedomotic.ui;
 
+import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 
 import java.util.Observable;
 import java.util.Observer;
+
+import com.actionbarsherlock.app.SherlockFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
-import es.gpulido.freedomotic.api.FreedomController;
+import es.gpulido.freedomotic.api.FreedomoticController;
 
-public class ObjectViewerFragment extends Fragment implements Observer{
+
+public class ObjectViewerFragment extends SherlockFragment implements Observer{
 	
 	 /**
      * Create a new instance of ObjectViewerFragment, initialized to
      * show the text at 'index'.
      */
-    public static ObjectViewerFragment newInstance(int roomIndex, int objectIndex) {
+    public static ObjectViewerFragment newInstance(String objName) {
     	ObjectViewerFragment f = new ObjectViewerFragment();
 
         // Supply index input as an argument.
         Bundle args = new Bundle();
-        args.putInt("roomIndex", roomIndex);
-        args.putInt("objectIndex", objectIndex);
+        args.putString("objName", objName);        
         f.setArguments(args);
         return f;
     }
 
-    public int getRoomIndex() {
-        return getArguments().getInt("roomIndex", 0);
+    public String getObjName() {
+        return getArguments().getString("objName");
     }
+        
+	@Override
+    public void onResume() {
+    	super.onResume();    	
+    	FreedomoticController.getInstance().addObserver(this);    	
+    };
     
-    public int getObjectIndex() {
-        return getArguments().getInt("objectIndex", 0);
-    }
-           
+    @Override
+    public void onPause() {    	
+    	FreedomoticController.getInstance().deleteObserver(this);
+    	getSherlockActivity().getSupportActionBar().setSubtitle(null);
+    	super.onPause();    	
+    };
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
    
-    	if (container == null) {
-            // We have different layouts, and in one of them this
-            // fragment's containing frame doesn't exist.  The fragment
-            // may still be created from its saved state, but there is
-            // no reason to try to create its view hierarchy because it
-            // won't be displayed.  Note this is not needed -- we could
-            // just run the code below, where we would create and return
-            // the view hierarchy; it would just never be used.
-            return null;
-        }
-    	//we need to now what is the current room being selected to autoupdate the details panel
-    	//TODO THIS IS WRONG!!! this must be on the RoomsFragment
-    	//RoomsFragment master = (RoomsFragment)getFragmentManager().findFragmentById(R.id.titles);
-     	if( EnvironmentController.getInstance().getRoom(getRoomIndex()).getObjects().size()!=0)
-     	{
-     		
-	    	EnvObject object = EnvironmentController.getInstance().getRoom(getRoomIndex()).getObjects().get(getObjectIndex()); 
-	    	getActivity().setTitle("roomIndex:"+getRoomIndex()+"objectIndex: "+ getObjectIndex()+"objectName: "+object.getName());
-	    	View vi = inflater.inflate(R.layout.view_object, container, false);
-	        ListView view = (ListView)vi.findViewById(R.id.list_behaviors);
-	    	view.setAdapter(new BehaviorsAdapter(getActivity(), object));
-	    	return vi;
-     	}
-     	else
-     	{
-     		return null;
-     		
-     	}    	
+    	if (container == null) { return null;}
+    	EnvObject object = EnvironmentController.getInstance().getObject(getObjName());    	
+    	getSherlockActivity().getSupportActionBar().setSubtitle(object.getName());
+    	View vi = inflater.inflate(R.layout.view_object, container, false);
+        ListView view = (ListView)vi.findViewById(R.id.list_behaviors);
+    	view.setAdapter(new BehaviorsAdapter(getActivity(), object));
+    	return vi;
     }
-      
-    @Override
-    public void onResume() {
-    	super.onResume();    	
-    	FreedomController.getInstance().addObserver(this); 
-    };
-    
-    @Override
-    public void onPause() {    	
-    	FreedomController.getInstance().deleteObserver(this);
-    	super.onPause();    	
-    };
-    
-	@Override
-	public void update(Observable observable, Object data) {		
-			
-		if( getActivity() instanceof ObjectViewerActivity)
-		{			
-			ListView view = (ListView)getActivity().findViewById(R.id.list_behaviors);
-			view.post(new Runnable(){
-				@Override
-				public void run() {
-					ListView view = (ListView)getActivity().findViewById(R.id.list_behaviors);
-					((BehaviorsAdapter)view.getAdapter()).notifyDataSetChanged();
-					
-				}});
-		}
-		else //is dual panel
-		{
-			ObjectViewerFragment details2 = (ObjectViewerFragment)
-                    getFragmentManager().findFragmentById(R.id.details);
-			if (details2!=null)
-			{				
-				View view = details2.getView();
-				view.post(new Runnable(){
-					@Override
-					public void run() {
-						ListView view2 = (ListView)getActivity().findViewById(R.id.list_behaviors);
-						((BehaviorsAdapter)view2.getAdapter()).notifyDataSetChanged();						
-					}});
-								
-			}
-		
-			
-			
-		}
-    		
-	}	
+
+	public void update(Observable observable, Object data) {
+		// TODO Auto-generated method stub
+		ListView view = (ListView)getActivity().findViewById(R.id.list_behaviors);
+		view.post(new Runnable(){
+			public void run() {			
+				ListView view = (ListView)getActivity().findViewById(R.id.list_behaviors);
+				((BehaviorsAdapter)view.getAdapter()).notifyDataSetChanged();													
+			}});				
+	}
+	
+	
+       
+//    @Override
+//    public void onResume() {
+//    	super.onResume();    	
+//    	FreedomController.getInstance().addObserver(this); 
+//    };
+//    
+  
+//    
+//	@Override
+//	public void update(Observable observable, Object data) {		
+//			
+//		if( getActivity() instanceof ObjectViewerActivity)
+//		{			
+//			ListView view = (ListView)getActivity().findViewById(R.id.list_behaviors);
+//			view.post(new Runnable(){
+//				@Override
+//				public void run() {
+//					ListView view = (ListView)getActivity().findViewById(R.id.list_behaviors);
+//					((BehaviorsAdapter)view.getAdapter()).notifyDataSetChanged();
+//					
+//				}});
+//		}
+//		else //is dual panel
+//		{
+//			ObjectViewerFragment details2 = (ObjectViewerFragment)
+//                    getFragmentManager().findFragmentById(R.id.details);
+//			if (details2!=null)
+//			{				
+//				View view = details2.getView();
+//				view.post(new Runnable(){
+//					@Override
+//					public void run() {
+//						ListView view2 = (ListView)getActivity().findViewById(R.id.list_behaviors);
+//						((BehaviorsAdapter)view2.getAdapter()).notifyDataSetChanged();						
+//					}});
+//								
+//			}
+//		
+//			
+//			
+//		}
+//    		
+//	}	
 }
