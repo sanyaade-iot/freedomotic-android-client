@@ -17,7 +17,8 @@
     android:paddingLeft="2dip"    
     android:drawablePadding="4dip"
     android:drawableLeft="@drawable/ic_home"
-    android:text="@+id/TextView01"       
+    android:text="@+id/TextView01"
+    style="@style/ListItemContainer"   
     >
     <!--  style="@style/RowText"-->
 </TextView>
