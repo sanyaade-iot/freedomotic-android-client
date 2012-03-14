@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.StrictMode;
@@ -49,10 +50,13 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 		super.onCreate(savedInstanceState);
 		
 		//Ipv6 fix
-		System.setProperty("java.net.preferIPv6Addresses", "false");
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-				.permitAll().build();
-		StrictMode.setThreadPolicy(policy);
+		System.setProperty("java.net.preferIPv6Addresses", "false");		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD)
+		{
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+					.permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+		}
 	
 
 		//Set the navigation mode in the actionbar		
@@ -109,8 +113,7 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	private void readSettings() {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		Preferences.create(prefs);
-		
+		Preferences.create(prefs);		
 		// Init RestResource
 		switch (EnvironmentController.getInstance().init()) {
 //		case EnvironmentController.STOMP_ERROR:
@@ -238,7 +241,10 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 			case 2:
 				// Error.
 				// TODO:
-				alertDialog.setMessage(msg.getData().getString("msg"));
+				if (msg.getData().getString("msg")!="")
+					alertDialog.setMessage(msg.getData().getString("msg"));
+				else
+					alertDialog.setMessage("Review your preferences and/or network");
 				alertDialog.show();							
 				break;
 			default:			

@@ -61,8 +61,8 @@ public class EnvironmentController  extends Observable implements Observer {
     }
          
     public static boolean prepareRestResource()
-    {
-        ClientResource cr = new ClientResource(Preferences.getServerString()+"/v1/environment/");
+    {        
+    	ClientResource cr = new ClientResource(Preferences.getServerString()+"/v1/environment/");
         resourceEnvironment = cr.wrap(EnvironmentResource.class);
         //TODO: Find how to check the configuration
         return true;

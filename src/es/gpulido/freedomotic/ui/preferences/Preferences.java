@@ -35,10 +35,12 @@ public class Preferences {
 			
 	public static String getServerString()
 	{
-	  String serverIP = prefs.getString("server_ip","");        
-      String serverPort = prefs.getString("server_port","");	        
+	  String serverIP = prefs.getString("server_ip","");
+	  if (serverIP== "") return "";      
+	  String serverPort = prefs.getString("server_port","");
+	  if (serverPort == "") return "http://"+serverIP;
       return "http://"+serverIP+":"+serverPort;	        
-	}
+	}	 
 	
 	public static String getBrokerIP()
 	{
