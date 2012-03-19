@@ -1,5 +1,7 @@
 package es.gpulido.freedomotic.ui;
 
+import org.restlet.resource.Post;
+
 import it.freedomotic.model.object.EnvObject;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -43,7 +46,8 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	private AlertDialog alertDialog;	
 
 	Fragment mRoomsFragment;
-	Fragment mHousingPlanFragment;
+	Fragment mHousingPlanFragment;	
+	boolean refreshing = true;
 								
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -144,13 +148,17 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 	    super.onSaveInstanceState(outState);
-	    outState.putInt("tab", getSupportActionBar().getSelectedNavigationIndex());
+	    outState.putInt("tab", getSupportActionBar().getSelectedNavigationIndex());	    
 	}
 	
 	@Override	
 	public boolean onCreateOptionsMenu(Menu menu) {		
 		MenuInflater menuInflater= getSupportMenuInflater();
-		menuInflater.inflate(R.menu.main, menu);		
+		menuInflater.inflate(R.menu.main, menu);
+		if (refreshing)
+		{
+			menu.findItem(R.id.menu_refresh).setVisible(false);			
+		}
 		return true;
 	}
 
@@ -160,11 +168,9 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 		case android.R.id.home:	    
             // app icon in action bar clicked; go Location selection
             return true;
-//		case R.id.menu_refresh:
-//			HousingPlanFragment master = new HousingPlanFragment();
-//			replaceFragment(R.id.fragment_dashboard, master);	        
-////			update();
-//			break;
+		case R.id.menu_refresh:						
+			update();
+			break;
 
 //		case R.id.menu_search:
 //			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
@@ -196,8 +202,10 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	private class RefreshObjects extends AsyncTask<Object, Void, Message> {
 		// private final ProgressDialog dialog = new ProgressDialog(Main.this);
 		// can use UI thread here
-		protected void onPreExecute() {			
+		protected void onPreExecute() {
 			setSupportProgressBarIndeterminateVisibility(true);
+			refreshing = true;
+			invalidateOptionsMenu();
 		}
 
 		// automatically done on worker thread (separate from UI thread)
@@ -252,6 +260,8 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 
 			}
 			setSupportProgressBarIndeterminateVisibility(false);
+			refreshing = false;
+			invalidateOptionsMenu();
 		}
 	}
 

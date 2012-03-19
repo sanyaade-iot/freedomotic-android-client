@@ -6,4 +6,5 @@
 	<string name="retrieve_object_data">"Retrieving Object data"</string>
 	
 	<string name="menu_preferences">Preferences</string>
+	<string name="menu_refresh">Refresh</string>
 </resources>
