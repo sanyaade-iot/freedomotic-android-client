@@ -60,22 +60,21 @@ public class HousingPlanFragment extends SelectableObjectFragment implements Obs
 		myview = new InternalView(getSherlockActivity());		
 		return myview;
 	}
-//	
-//	@Override
-//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {	    		
-//	
-//		inflater.inflate(R.menu.menu_housingplan, menu);
-//		super.onCreateOptionsMenu(menu, inflater);		 		
-//	}
 	
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.menu_fittoscreen) {
-//        	myview.fitToScreen();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {	    			
+		inflater.inflate(R.menu.housingplan, menu);
+		super.onCreateOptionsMenu(menu, inflater);		 		
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_fit_on_screen) {
+        	myview.fitToScreen();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 	
 	public void update(Observable observable, Object data) {						
 		if (observable.equals(FreedomoticController.getInstance()))
@@ -216,9 +215,11 @@ public class HousingPlanFragment extends SelectableObjectFragment implements Obs
 		}
 		  //Adapt the "original coordinates" from freedom to the android device size		  
 		  public void fitToScreen()
-		  {			  			  
+		  {			  			  			  
+			  int actionBarHeight = getSherlockActivity().getActionBar().getHeight();
 			  int xSize =getWidth()-MARGIN*2; 
-			  int ySize =getHeight()-MARGIN*2;			  
+			  int ySize =getHeight()-MARGIN*2 - actionBarHeight;
+			  
 			  
 			  RectF pathBounds = new RectF();
 			  envPath.computeBounds(pathBounds, true);
@@ -232,7 +233,7 @@ public class HousingPlanFragment extends SelectableObjectFragment implements Obs
 			  else
 				  mScaleFactor = yScale;
 			  mPosX = MARGIN;
-			  mPosY = MARGIN;
+			  mPosY = MARGIN+actionBarHeight;
 			  invalidate();
 
 		  }

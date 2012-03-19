@@ -7,4 +7,6 @@
 	
 	<string name="menu_preferences">Preferences</string>
 	<string name="menu_refresh">Refresh</string>
+	
+	<string name="menu_fitonscreen">Fit</string>
 </resources>

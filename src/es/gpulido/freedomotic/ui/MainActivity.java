@@ -62,7 +62,7 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 			StrictMode.setThreadPolicy(policy);
 		}
 	
-
+	
 		//Set the navigation mode in the actionbar		
 		Context context = getSupportActionBar().getThemedContext();
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
