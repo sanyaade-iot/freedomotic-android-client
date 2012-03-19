@@ -34,8 +34,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.restlet.representation.FileRepresentation;
-import org.restlet.resource.ClientResource;
 
 import es.gpulido.freedomotic.ui.preferences.Preferences;
 
@@ -98,17 +96,7 @@ public class BitmapUtils {
 	    return bmImg;
 		
 	}
-    public static String getResourcePath(String icon)
-    {    	
 		
-	  	ClientResource cr = new ClientResource(Preferences.getServerString()+"/v1/environment/resources/"+icon);		  	
-    	ImageResource resourceImage = cr.wrap(ImageResource.class);						    	    	
-	    return resourceImage.getImagePath();    	    	  
-    	    	
-    }
-
-	
-	
     public static Bitmap getImage(String icon, int f, int g) {
         String resizedImageKey = icon + "-" + f + "-" + g;
         Bitmap img;
@@ -118,8 +106,7 @@ public class BitmapUtils {
         }
         else
         {                	            	            
-            String path = BitmapUtils.getResourcePath(icon);
-        	img = BitmapUtils.downloadFile(Preferences.getServerString()+"/v1/resources/"+path);       
+        	img = BitmapUtils.downloadFile(Preferences.getServerString()+"/v1/environment/resources/"+icon);
             if (img != null) {            //img just loaded from disk, cache it resized
                 if ((f <= 0) || (g <= 0)) {//resizing not needed
                 	cachedObjBitmap.put(resizedImageKey, img);
