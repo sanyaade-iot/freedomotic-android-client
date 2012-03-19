@@ -36,6 +36,7 @@ public class DrawingUtils {
 		}		  		  
 		//closing the path
 		mP.close();
+	
 		return mP;
 	}
 	public static float nextValidColor=0xFF000001;

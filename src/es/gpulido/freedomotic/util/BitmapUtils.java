@@ -109,8 +109,8 @@ public class BitmapUtils {
 
 	
 	
-    public static Bitmap getImage(String icon, int width, int height) {
-        String resizedImageKey = icon + "-" + width + "-" + height;
+    public static Bitmap getImage(String icon, int f, int g) {
+        String resizedImageKey = icon + "-" + f + "-" + g;
         Bitmap img;
         if (cachedObjBitmap.containsKey(resizedImageKey))
         {
@@ -121,10 +121,10 @@ public class BitmapUtils {
             String path = BitmapUtils.getResourcePath(icon);
         	img = BitmapUtils.downloadFile(Preferences.getServerString()+"/v1/resources/"+path);       
             if (img != null) {            //img just loaded from disk, cache it resized
-                if ((width <= 0) || (height <= 0)) {//resizing not needed
+                if ((f <= 0) || (g <= 0)) {//resizing not needed
                 	cachedObjBitmap.put(resizedImageKey, img);
                 } else {
-                	cachedObjBitmap.put(resizedImageKey, Bitmap.createScaledBitmap(img, width, height, true));	                    	
+                	cachedObjBitmap.put(resizedImageKey, Bitmap.createScaledBitmap(img, f, g, true));	                    	
                 }
                 return img;
             }

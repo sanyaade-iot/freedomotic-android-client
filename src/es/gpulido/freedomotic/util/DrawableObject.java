@@ -20,6 +20,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.RectF;
 
 
 public class DrawableObject extends DrawableElement{
@@ -57,15 +58,18 @@ public class DrawableObject extends DrawableElement{
 	@Override
 	public void draw(Canvas canvas) {		
 		String file = getEnvObject().getCurrentRepresentation().getIcon();
+		Path objectPath = DrawingUtils.freedomPolygonToPath((FreedomPolygon)getEnvObject().getCurrentRepresentation().getShape());
+		RectF box = new RectF();
+		objectPath.computeBounds(box, true);
+		System.out.print("GPT box: box widht:"+box.width()+ " box heigh"+box.height());
 		drawingMatrix = new Matrix();		
 		float rotation = (float) getEnvObject().getCurrentRepresentation().getRotation();			
 		drawingMatrix.postRotate(rotation);
 		drawingMatrix.postTranslate(getEnvObject().getCurrentRepresentation().getOffset().getX(), getEnvObject().getCurrentRepresentation().getOffset().getY());    		
 		Bitmap bmp=null;
 		if(file!=null)
-		{    		 //TODO: Asign the bmp in the setEnvObject
-        	 //bmp =BitmapUtils.getImage(OBJECT_PATH+file,-1,-1);        
-        	 bmp =BitmapUtils.getImage(file,-1,-1);
+		{    		 //TODO: Asign the bmp in the setEnvObject       
+        	 bmp =BitmapUtils.getImage(file,(int)box.width(),(int)box.height());
 		}
 		if (bmp!=null)
         {                       
@@ -75,8 +79,7 @@ public class DrawableObject extends DrawableElement{
         }
         else
         {
-        	//TODO: Cache path
-    		Path objectPath = DrawingUtils.freedomPolygonToPath((FreedomPolygon)getEnvObject().getCurrentRepresentation().getShape());      		
+        	//TODO: Cache path    		
     		Paint paint = new Paint();
     		paint.setStyle(Style.FILL);
     		
