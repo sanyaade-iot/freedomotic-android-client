@@ -9,6 +9,7 @@ import it.freedomotic.reactions.Payload;
 import it.freedomotic.reactions.Statement;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Observable;
 
@@ -72,10 +73,10 @@ public class FreedomoticController extends Observable{
     {	            
     	public void message(Map header, String message) {    		
     		Payload payload = FreedomoticController.parseMessage(message);
-    		EnvObject obj = EnvironmentController.getInstance().getObject(payload.findAttribute("object.name").getValue());    		
-    		    		
-    		for (Statement st: payload.getStatements())
-    		{
+    		EnvObject obj = EnvironmentController.getInstance().getObject(payload.getStatement("object.name").getValue());    				 
+    		Iterator it = payload.iterator();
+	        while (it.hasNext()) {
+	            Statement st = (Statement) it.next();	            
     			if (st.getAttribute().equalsIgnoreCase("object.currentRepresentation"))
     			{    			
     				if (obj.getCurrentRepresentationIndex() !=  Integer.parseInt(st.getValue()))
@@ -154,12 +155,12 @@ public class FreedomoticController extends Observable{
 	private static Statement statement;
 	public static Payload parseMessage(String message)
 	{
-		final Payload payload = new Payload();
-		//final Statement statement = new Statement();
+		final Payload payload = new Payload();		
 		RootElement root = new RootElement("it.freedomotic.events.ObjectHasChangedBehavior");	        
 	    Element payloadroot =  root.getChild("payload");
 	    Element pl = payloadroot.getChild("payload");
-	    Element st = pl.getChild("it.freedomotic.reactions.Statement");
+	    Element entry = pl.getChild("entry");
+	    Element st = entry.getChild("it.freedomotic.reactions.Statement");
 	   	    
 	    
 	    st.setStartElementListener(new StartElementListener(){

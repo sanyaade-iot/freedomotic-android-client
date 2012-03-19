@@ -64,7 +64,8 @@ public class DrawableObject extends DrawableElement{
 		Bitmap bmp=null;
 		if(file!=null)
 		{    		 //TODO: Asign the bmp in the setEnvObject
-        	 bmp =BitmapUtils.getImage(OBJECT_PATH+file,-1,-1);        
+        	 //bmp =BitmapUtils.getImage(OBJECT_PATH+file,-1,-1);        
+        	 bmp =BitmapUtils.getImage(file,-1,-1);
 		}
 		if (bmp!=null)
         {                       

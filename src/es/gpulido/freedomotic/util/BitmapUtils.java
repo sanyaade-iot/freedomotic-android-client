@@ -34,6 +34,8 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.restlet.representation.FileRepresentation;
+import org.restlet.resource.ClientResource;
 
 import es.gpulido.freedomotic.ui.preferences.Preferences;
 
@@ -48,6 +50,9 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+
+import it.freedomotic.restapi.server.interfaces.ImageResource;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -93,7 +98,17 @@ public class BitmapUtils {
 	    return bmImg;
 		
 	}
-    
+    public static String getResourcePath(String icon)
+    {    	
+		
+	  	ClientResource cr = new ClientResource(Preferences.getServerString()+"/v1/environment/resources/"+icon);		  	
+    	ImageResource resourceImage = cr.wrap(ImageResource.class);						    	    	
+	    return resourceImage.getImagePath();    	    	  
+    	    	
+    }
+
+	
+	
     public static Bitmap getImage(String icon, int width, int height) {
         String resizedImageKey = icon + "-" + width + "-" + height;
         Bitmap img;
@@ -103,7 +118,8 @@ public class BitmapUtils {
         }
         else
         {                	            	            
-            img = BitmapUtils.downloadFile(Preferences.getServerString()+"/v1/resources/"+icon);
+            String path = BitmapUtils.getResourcePath(icon);
+        	img = BitmapUtils.downloadFile(Preferences.getServerString()+"/v1/resources/"+path);       
             if (img != null) {            //img just loaded from disk, cache it resized
                 if ((width <= 0) || (height <= 0)) {//resizing not needed
                 	cachedObjBitmap.put(resizedImageKey, img);
