@@ -29,7 +29,7 @@ public class DrawableRoom extends DrawableElement{
 	private Paint ghostPaint;
 	private Path drawingPath;
 	private RectF bounds= new RectF();
-	public static final String TEXTURE_PATH = "texture/";
+	public static final String TEXTURE_PATH = "";
 	
 	public DrawableRoom(Zone roomObject, Paint borderPaint,Paint textPaint)
 	{

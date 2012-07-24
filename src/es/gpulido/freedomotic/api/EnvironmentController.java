@@ -22,6 +22,7 @@ import java.util.Observer;
 
 import org.restlet.resource.ClientResource;
 
+
 import es.gpulido.freedomotic.ui.preferences.Preferences;
 
 public class EnvironmentController  extends Observable implements Observer {

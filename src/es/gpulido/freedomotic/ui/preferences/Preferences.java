@@ -70,7 +70,7 @@ public class Preferences {
 	
 	public static String getResourcesURL()
 	{
-		return getServerString()+"/v1/resources/";		
+		return getServerString()+"/v1/environment/resources/";		
 	}
 	
 	public static String getEnvironmentURL()

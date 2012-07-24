@@ -4,10 +4,5 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="lib/gozirra-0.4.1.jar"/>
-	<classpathentry kind="lib" path="lib/org.restlet.jar"/>
-	<classpathentry kind="lib" path="lib/android-support-v4.jar"/>
-	<classpathentry kind="lib" path="lib/freedomotic-model.jar"/>
-	<classpathentry kind="lib" path="lib/RestApiInterfaces.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

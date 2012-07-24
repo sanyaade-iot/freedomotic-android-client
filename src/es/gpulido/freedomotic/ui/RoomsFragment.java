@@ -8,7 +8,6 @@ import java.util.Observer;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.viewpagerindicator.TitlePageIndicator;
-import com.viewpagerindicator.TitleProvider;
 
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
@@ -161,7 +160,7 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 	}
 	
 		
-    public static class MyAdapter extends FragmentPagerAdapter implements TitleProvider{
+    public static class MyAdapter extends FragmentPagerAdapter {
     	
         public MyAdapter (FragmentManager fm) {        	
         	super(fm);        	
@@ -188,7 +187,8 @@ public class RoomsFragment extends SherlockFragment implements Observer{
         	    return POSITION_NONE;        	        	
         };
         
-		public String getTitle(int position) {
+        @Override
+        public CharSequence getPageTitle(int position) {
 			// TODO Auto-generated method stub			
 			return EnvironmentController.getInstance().getRoom(position).getName().toUpperCase();
 		}

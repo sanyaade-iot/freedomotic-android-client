@@ -56,8 +56,10 @@ public class FreedomoticController extends Observable{
 			stompClient = new Client(Preferences.getBrokerIP(),
 					Preferences.getBrokerPort(), "", "");
 			// Init the listener
+			Map header = new HashMap();
+	        header.put("transformation", "jms-object-xml");
 			String queue = "/topic/VirtualTopic.app.event.sensor.object.behavior.change";
-			stompClient.subscribe(queue, myStompListener);
+			stompClient.subscribe(queue, myStompListener,header);
 
 		} catch (LoginException e) {
 			return false;
@@ -70,10 +72,10 @@ public class FreedomoticController extends Observable{
 	
 	
     private Listener myStompListener = new Listener()
-    {	            
+    {	                	
     	public void message(Map header, String message) {    		
     		Payload payload = FreedomoticController.parseMessage(message);
-    		EnvObject obj = EnvironmentController.getInstance().getObject(payload.getStatement("object.name").getValue());    				 
+    		EnvObject obj = EnvironmentController.getInstance().getObject(payload.getStatements("object.name").get(0).getValue());    				 
     		Iterator it = payload.iterator();
 	        while (it.hasNext()) {
 	            Statement st = (Statement) it.next();	            
@@ -141,7 +143,7 @@ public class FreedomoticController extends Observable{
               "	    </properties>" +
               "	</properties>" +                  
               "</it.freedomotic.reactions.Command>";
-      	HashMap header = new HashMap();
+      	HashMap<String, String> header = new HashMap<String, String>();
       	header.put("transformation", "jms-object-xml");  
 		if (stompClient!=null)
 			stompClient.send(queue, command,header);
