@@ -20,13 +20,9 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -34,23 +30,27 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
 import es.gpulido.freedomotic.api.FreedomoticController;
-import es.gpulido.freedomotic.ui.base.IRefreshableFragment;
 import es.gpulido.freedomotic.util.DrawableElement;
 import es.gpulido.freedomotic.util.DrawableObject;
 import es.gpulido.freedomotic.util.DrawableRoom;
 import es.gpulido.freedomotic.util.DrawingUtils;
 
-public class HousingPlanFragment extends SelectableObjectFragment implements
+@TargetApi(12) public class HousingPlanFragment extends SelectableObjectFragment implements
 		Observer {
 
 	InternalView myview;
@@ -250,13 +250,13 @@ public class HousingPlanFragment extends SelectableObjectFragment implements
 		}
 
 		// Map of objects that are drawed
-		HashMap<Integer, DrawableElement> objectsIndex;
+		SparseArray<DrawableElement> objectsIndex;
 		// Color that is used to represent no painting in the ghostCanvas
 		int eraseColor = Color.BLACK;
 
-		void createGhostCanvas(Canvas canvas) {
+		@SuppressLint("NewApi") void createGhostCanvas(Canvas canvas) {
 			//TODO: The objects index shouldn't be created always.
-			objectsIndex = new HashMap<Integer, DrawableElement>();
+			objectsIndex = new SparseArray<DrawableElement>();
 			lookup = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(),
 					Bitmap.Config.ARGB_8888);
 			lookup.setHasAlpha(true);
@@ -285,8 +285,8 @@ public class HousingPlanFragment extends SelectableObjectFragment implements
 				renderEnvironment(canvas);
 				renderRooms(canvas);
 				renderObjects(canvas);
-				ListView lview = new ListView(this.getContext());
-				lview.draw(canvas);
+//				ListView lview = new ListView(this.getContext());
+//				lview.draw(canvas);
 				canvas.restore();
 			} else {
 				// initialize();
@@ -318,7 +318,7 @@ public class HousingPlanFragment extends SelectableObjectFragment implements
 
 		}
 
-		@Override
+		@SuppressLint({ "NewApi"}) @Override
 		public boolean onTouchEvent(MotionEvent ev) {
 			// Let the ScaleGestureDetector inspect all events.
 			mScaleDetector.onTouchEvent(ev);

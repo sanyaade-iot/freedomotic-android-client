@@ -10,21 +10,19 @@
  ******************************************************************************/
 package es.gpulido.freedomotic.ui;
 
-import it.freedomotic.model.object.Behavior;
 import it.freedomotic.model.object.EnvObject;
 
 import java.util.Observable;
 import java.util.Observer;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.actionbarsherlock.app.SherlockFragment;
+
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
 import es.gpulido.freedomotic.api.FreedomoticController;
@@ -53,12 +51,14 @@ public class ObjectViewerFragment extends SherlockFragment implements Observer{
 	@Override
     public void onResume() {
     	super.onResume();    	
-    	FreedomoticController.getInstance().addObserver(this);    	
+    	FreedomoticController.getInstance().addObserver(this);
+    	EnvironmentController.getInstance().addObserver(this);  
     };
     
     @Override
     public void onPause() {    	
     	FreedomoticController.getInstance().deleteObserver(this);
+    	EnvironmentController.getInstance().deleteObserver(this);  
     	getSherlockActivity().getSupportActionBar().setSubtitle(null);
     	super.onPause();    	
     };
@@ -76,8 +76,7 @@ public class ObjectViewerFragment extends SherlockFragment implements Observer{
     	return vi;
     }
 
-	public void update(Observable observable, Object data) {
-		// TODO Auto-generated method stub
+	public void update(Observable observable, Object data) {		
 		ListView view = (ListView)getActivity().findViewById(R.id.list_behaviors);
 		view.post(new Runnable(){
 			public void run() {			

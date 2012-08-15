@@ -5,24 +5,23 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
-import es.gpulido.freedomotic.ui.base.IRefreshableFragment;
-import android.os.AsyncTask;
-import android.os.Bundle;
-
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 //Thanks to http://tamsler.blogspot.com/2011/11/android-viewpager-and-fragments-part-ii.html
 public class RoomsFragment extends SherlockFragment implements Observer{
 	public static int NUM_ITEMS = 0;	
@@ -32,7 +31,7 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 	TitlePageIndicator titleIndicator;
 	//this is outside the adapter, to prevent the reinitialization of the hashmap.
 	//AS the getView is not always called this maintains in sync the data
-	protected static Map<Integer, ZoneObjectListFragment> mPageReferenceMap= new HashMap<Integer, ZoneObjectListFragment>();
+	protected static SparseArray<ZoneObjectListFragment> mPageReferenceMap= new SparseArray<ZoneObjectListFragment>();
 //	
 //	@Override
 //	public void onAttach(android.app.Activity activity) {
@@ -127,7 +126,7 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 			}
 
 			public void onPageSelected(int currentIndex) {				
-				ZoneObjectListFragment zoneFragment = ((MyAdapter)mPager.getAdapter()).getFragment(currentIndex);
+				ZoneObjectListFragment zoneFragment = ((MyAdapter)mPager.getAdapter()).getFragment(currentIndex);			
 				if (zoneFragment != null)
 					zoneFragment.selectItem();				
 			}
@@ -137,7 +136,7 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 		
 		
 		//Add the observer to the environment changes
-		EnvironmentController.getInstance().addObserver(this);
+		EnvironmentController.getInstance().addObserver(this);		
 		initialize();
 		return vi;
 	}

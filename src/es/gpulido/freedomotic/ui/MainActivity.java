@@ -1,8 +1,6 @@
 package es.gpulido.freedomotic.ui;
 
-import org.restlet.resource.Post;
-
-import it.freedomotic.model.object.EnvObject;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,10 +13,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -41,7 +36,7 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	//TODO: move to a constants class
 	private static final int ACTIVITY_PREFERENCES = 0;
 	
-	public static int THEME = R.style.Theme_Sherlock_Light_DarkActionBar;
+	public static int THEME = R.style.Theme_freedomotic;
 	/** The alert dialog box. */
 	private AlertDialog alertDialog;	
 
@@ -49,7 +44,7 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	Fragment mHousingPlanFragment;	
 	boolean refreshing = true;
 								
-	public void onCreate(Bundle savedInstanceState) {
+	@SuppressLint({ "NewApi"}) public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		
@@ -60,11 +55,14 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 					.permitAll().build();
 			StrictMode.setThreadPolicy(policy);
+			
 		}
 	
 	
 		//Set the navigation mode in the actionbar		
 		Context context = getSupportActionBar().getThemedContext();
+		getSupportActionBar().setDisplayUseLogoEnabled(true);
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.locations,
 				R.layout.sherlock_spinner_item);							

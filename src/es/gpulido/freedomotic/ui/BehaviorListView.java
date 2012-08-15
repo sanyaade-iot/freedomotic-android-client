@@ -22,6 +22,7 @@ import it.freedomotic.model.object.ListBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -39,6 +40,13 @@ public class BehaviorListView extends LinearLayout{
 	ViewHolder holder;
 	Behavior m_behavior;
 	EnvObject m_obj; // the envobject where the behavior belongs
+	
+	public BehaviorListView(Context context, AttributeSet args)
+	{
+		super(context, args);		
+	}
+	
+	
 	public BehaviorListView(Context context,Behavior behavior,EnvObject obj) {
 		super(context);
 		// TODO Auto-generated constructor stub

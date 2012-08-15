@@ -1,7 +1,7 @@
 <resources>    
     <string name="app_name">Freedomotic</string>
     <string name="error_dialog_title">Error</string>
-    <string name="error_dialog_button">Ok</string>
+    <string name="error_dialog_button">@android:string/ok</string>
 
 	<string name="retrieve_object_data">"Retrieving Object data"</string>
 	

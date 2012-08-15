@@ -75,7 +75,8 @@ public class FreedomoticController extends Observable{
     {	                	
     	public void message(Map header, String message) {    		
     		Payload payload = FreedomoticController.parseMessage(message);
-    		EnvObject obj = EnvironmentController.getInstance().getObject(payload.getStatements("object.name").get(0).getValue());    				 
+    		EnvObject obj = EnvironmentController.getInstance().getObject(payload.getStatements("object.name").get(0).getValue());
+    		
     		Iterator it = payload.iterator();
 	        while (it.hasNext()) {
 	            Statement st = (Statement) it.next();	            
@@ -161,8 +162,8 @@ public class FreedomoticController extends Observable{
 		RootElement root = new RootElement("it.freedomotic.events.ObjectHasChangedBehavior");	        
 	    Element payloadroot =  root.getChild("payload");
 	    Element pl = payloadroot.getChild("payload");
-	    Element entry = pl.getChild("entry");
-	    Element st = entry.getChild("it.freedomotic.reactions.Statement");
+	    //Element entry = pl.getChild("entry");
+	    Element st = pl.getChild("it.freedomotic.reactions.Statement");
 	   	    
 	    
 	    st.setStartElementListener(new StartElementListener(){

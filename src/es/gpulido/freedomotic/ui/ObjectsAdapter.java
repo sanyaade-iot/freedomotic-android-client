@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ObjectsAdapter extends ArrayAdapter<EnvObject> {
@@ -76,6 +75,10 @@ public class ObjectsAdapter extends ArrayAdapter<EnvObject> {
 			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_tv);			
 		else if(type.endsWith("ElectricDevice"))
 			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_electricdevice);						
+		else if(type.endsWith("Door"))
+			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_door);
+		else if(type.endsWith("Clock"))
+			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_clock);			
 		else
 			img = getContext().getResources().getDrawable(R.drawable.ic_list_object_default);
 		holder.textView.setCompoundDrawablesWithIntrinsicBounds(img,null,null,null);	

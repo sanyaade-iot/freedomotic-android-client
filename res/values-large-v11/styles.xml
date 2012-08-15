@@ -18,6 +18,7 @@
     <style name="ListItemContainerBase">
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
         <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
+        
     </style>
     
 </resources>

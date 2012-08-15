@@ -1,14 +1,17 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="CustomTitlePageIndicator" parent="@style/Theme.Sherlock.Light.DarkActionBar">
-        <item name="android:background">#3b3b3b</item> -->        
-    <!--     <item name="footerColor">#FFAA2222</item>
+    <!--Style to be aplyed on the rooms tab  -->
+    <style name="CustomTitlePageIndicator" parent="@style/Theme.freedomotic">        
+        <item name="android:background">@color/grey_freedomotic</item> -->        
+        <item name="footerColor">@color/green_freedomotic</item>
         <item name="footerLineHeight">1dp</item>
         <item name="footerIndicatorHeight">3dp</item>
-        <item name="footerIndicatorStyle">underline</item>
-        <item name="textColor">#FFFFFF00</item>
-        <item name="selectedColor">#FF000000</item>
-        <item name="selectedBold">true</item> -->
+        <item name="footerIndicatorStyle">underline</item>-->
+    <!--    <item name="android:textColor">@color/green_freedomotic</item> --> 
+     <!--   <item name="selectedColor">@color/green_freedomotic</item> -->
+        <!--<item name="selectedBold">true</item> -->    
+     <!-- If you want to use the default ViewPagerIndicator-styles, use the following: -->       
+         
     </style>
     
     <style name="RowText">

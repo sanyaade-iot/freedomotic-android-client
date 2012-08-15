@@ -2,24 +2,12 @@ package es.gpulido.freedomotic.ui;
 import it.freedomotic.model.object.EnvObject;
 
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
-import es.gpulido.freedomotic.ui.base.BaseMultiPanelActivity;
 
 
 
@@ -52,7 +40,8 @@ public class ZoneObjectListFragment extends SelectableObjectListFragment {
     public void onCreate(Bundle savedInstanceState) {    	
     	super.onCreate(savedInstanceState);
         mRoomIndex = getArguments() != null ? getArguments().getInt("roomIndex") : 1; 
-        mCurCheckPosition = getArguments() != null ? getArguments().getInt("curChoice"): -1;        
+        mCurCheckPosition = getArguments() != null ? getArguments().getInt("curChoice"): -1;
+        
     }
     @Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -60,8 +49,11 @@ public class ZoneObjectListFragment extends SelectableObjectListFragment {
 		//TODO: Think where the refresh must be done
     	if (mListener.isDualPanel())
     	{    		
-    		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);    		
     	}
+    	//assign the background to the list as it can't be assigned by xml
+    	getListView().setSelector(R.drawable.selectable_background_freedomotic);
+    	getListView().setBackgroundColor(getResources().getColor(R.color.background_freedomotic));
     	setEmptyText("No data");
 	    setData();
         
@@ -95,7 +87,7 @@ public class ZoneObjectListFragment extends SelectableObjectListFragment {
 	//Throws again the objectselected to allow the listener to update the data
 	public void selectItem()
 	{		
-		if(mCurCheckPosition != -1)
+		if(mCurCheckPosition != -1 && mListener.isDualPanel())
 		{	
 			mListener.onObjectSelected(((EnvObject)getListAdapter().getItem(mCurCheckPosition)).getName(),this);
 		}
@@ -105,7 +97,8 @@ public class ZoneObjectListFragment extends SelectableObjectListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id) {				                	      		
 		mCurCheckPosition = position;
 		getListView().setItemChecked(mCurCheckPosition, true);
-		selectItem();
+		mListener.onObjectSelected(((EnvObject)getListAdapter().getItem(mCurCheckPosition)).getName(),this);
+		//selectItem();
 	}
 
 	
