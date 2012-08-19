@@ -13,6 +13,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.view.ContextThemeWrapper;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -25,82 +26,88 @@ import com.actionbarsherlock.view.Window;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
 import es.gpulido.freedomotic.api.FreedomoticController;
-import es.gpulido.freedomotic.ui.SelectableObjectListFragment.OnFragmentItemSelectedListener;
 import es.gpulido.freedomotic.ui.base.BaseMultiPanelActivity;
+import es.gpulido.freedomotic.ui.base.IFragmentItemSelectedListener;
 import es.gpulido.freedomotic.ui.preferences.EditPreferences;
 import es.gpulido.freedomotic.ui.preferences.Preferences;
 
 //Main activity that holds the first screen fragments
-public  class MainActivity extends  BaseMultiPanelActivity implements 
-	ActionBar.OnNavigationListener, OnFragmentItemSelectedListener{
-	//TODO: move to a constants class
+public class MainActivity extends BaseMultiPanelActivity implements
+		ActionBar.OnNavigationListener, IFragmentItemSelectedListener {
+	// TODO: move to a constants class
 	private static final int ACTIVITY_PREFERENCES = 0;
-	
+
 	public static int THEME = R.style.Theme_freedomotic;
 	/** The alert dialog box. */
-	private AlertDialog alertDialog;	
+	private AlertDialog alertDialog;
 
 	Fragment mRoomsFragment;
-	Fragment mHousingPlanFragment;	
+	Fragment mHousingPlanFragment;
 	boolean refreshing = true;
-								
-	@SuppressLint({ "NewApi"}) public void onCreate(Bundle savedInstanceState) {
+
+	@SuppressLint({ "NewApi" })
+	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
-		
-		//Ipv6 fix
-		System.setProperty("java.net.preferIPv6Addresses", "false");		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD)
-		{
+
+		// Ipv6 fix
+		System.setProperty("java.net.preferIPv6Addresses", "false");
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 					.permitAll().build();
 			StrictMode.setThreadPolicy(policy);
-			
+
 		}
-	
-	
-		//Set the navigation mode in the actionbar		
+
+		// Set the navigation mode in the actionbar
 		Context context = getSupportActionBar().getThemedContext();
 		getSupportActionBar().setDisplayUseLogoEnabled(true);
 		getSupportActionBar().setDisplayShowTitleEnabled(false);
+		// List of Fragments on the
 		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.locations,
-				R.layout.sherlock_spinner_item);							
-        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);						
-        
-	    getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-	    getSupportActionBar().setListNavigationCallbacks(list, this);
-	     		
-		//ActionBar features
+		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
+				context, R.array.locations, R.layout.sherlock_spinner_item);
+		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getSupportActionBar().setListNavigationCallbacks(list, this);
+
+		// ActionBar features
 		setSupportProgressBarIndeterminateVisibility(false);
 
-		//	Initializes the alert dialog to be used later.
-		alertDialog = new AlertDialog.Builder(this).create();
-		alertDialog.setTitle(getString(R.string.error_dialog_title));
-		alertDialog.setButton(getString(R.string.error_dialog_button),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						return;
-					}
-				});	
+		// Initializes the alert dialog to be used later.
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				new ContextThemeWrapper(this, R.style.Freedomotic_AlertDialog));
+		// AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.error_dialog_title)
+				.setCancelable(false)
+				.setPositiveButton(getString(R.string.error_dialog_button),
+						new DialogInterface.OnClickListener() {
 
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								return;
+							}
+						});
+		alertDialog = builder.create();
+
+		// setings
 		readSettings();
-		update();		
-		mRoomsFragment=Fragment.instantiate(this, RoomsFragment.class.getName());
-		mHousingPlanFragment=Fragment.instantiate(this, HousingPlanFragment.class.getName());		
+		update();
+		// create the instances for all fragments that are going to be used
+		mRoomsFragment = Fragment.instantiate(this,
+				RoomsFragment.class.getName());
+		mHousingPlanFragment = Fragment.instantiate(this,
+				HousingPlanFragment.class.getName());
 	}
-	
-	
-		
+
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		//TODO: Review how the new intent could be done to save / restore
-		if (itemPosition == 0)
-		{						
-			setMasterFragment(mRoomsFragment,1,false);
-		}
-		else
-		{			
-			setMasterFragment(mHousingPlanFragment,0,false);
+		// TODO: Review how the new intent could be done to save / restore
+		if (itemPosition == 0) {
+			setMasterFragment(mRoomsFragment, 1, false);
+		} else {
+			setMasterFragment(mHousingPlanFragment, 0, false);
 		}
 		return false;
 	}
@@ -111,19 +118,28 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 		new RefreshObjects().execute();
 	}
 
-
 	private void readSettings() {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		Preferences.create(prefs);		
+		Preferences.create(prefs);
+		initControllers();
+	}
+
+	private void initControllers() {
 		// Init RestResource
 		switch (EnvironmentController.getInstance().init()) {
-//		case EnvironmentController.STOMP_ERROR:
-//			Toast.makeText(
-//					this,
-//					"There is a problem with the Broker settings. Review your preferences and/or network",
-//					Toast.LENGTH_LONG).show();
-//			break;
+		case EnvironmentController.STOMP_CONNECT_FAILED_ERROR:
+			Toast.makeText(
+					this,
+					"There is a problem with the Broker settings. Review your preferences and/or network",
+					Toast.LENGTH_LONG).show();
+			break;
+		case EnvironmentController.STOMP_LOGIN_ERROR:
+			Toast.makeText(
+					this,
+					"There is a problem with the User / password. Review your preferences and/or network",
+					Toast.LENGTH_LONG).show();
+			break;
 		case EnvironmentController.REST_ERROR:
 			Toast.makeText(
 					this,
@@ -132,30 +148,31 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 			break;
 		case EnvironmentController.CONNECTED:
 			break;
-					
+
 		}
-//		if(!FreedomoticController.getInstance().initStompClient())
-//		{	
-//			Toast.makeText(
-//					this,
-//					"There is a problem with the Broker settings. Review your preferences and/or network",
-//					Toast.LENGTH_LONG).show();				
-//		}
+		// if(!FreedomoticController.getInstance().initStompClient())
+		// {
+		// Toast.makeText(
+		// this,
+		// "There is a problem with the Broker settings. Review your preferences and/or network",
+		// Toast.LENGTH_LONG).show();
+		// }
+
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-	    super.onSaveInstanceState(outState);
-	    outState.putInt("tab", getSupportActionBar().getSelectedNavigationIndex());	    
+		super.onSaveInstanceState(outState);
+		outState.putInt("tab", getSupportActionBar()
+				.getSelectedNavigationIndex());
 	}
-	
-	@Override	
-	public boolean onCreateOptionsMenu(Menu menu) {		
-		MenuInflater menuInflater= getSupportMenuInflater();
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getSupportMenuInflater();
 		menuInflater.inflate(R.menu.main, menu);
-		if (refreshing)
-		{
-			menu.findItem(R.id.menu_refresh).setVisible(false);			
+		if (refreshing) {
+			menu.findItem(R.id.menu_refresh).setVisible(false);
 		}
 		return true;
 	}
@@ -163,16 +180,16 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:	    
-            // app icon in action bar clicked; go Location selection
-            return true;
-		case R.id.menu_refresh:						
+		case android.R.id.home:
+			// app icon in action bar clicked; go Location selection
+			return true;
+		case R.id.menu_refresh:
 			update();
 			break;
 
-//		case R.id.menu_search:
-//			Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
-//			break;
+		// case R.id.menu_search:
+		// Toast.makeText(this, "Tapped search", Toast.LENGTH_SHORT).show();
+		// break;
 
 		case R.id.menu_preferences:
 			startActivityForResult(new Intent(this, EditPreferences.class),
@@ -186,17 +203,15 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		case ACTIVITY_PREFERENCES:			
+		case ACTIVITY_PREFERENCES:
 			// Preference screen was called: use new preferences to connect
 			readSettings();
 			update();
 			break;
 		}
 	}
- 
 
 	// Updates asynchronly the Objects
-	// TODO: this must be in the
 	private class RefreshObjects extends AsyncTask<Object, Void, Message> {
 		// private final ProgressDialog dialog = new ProgressDialog(Main.this);
 		// can use UI thread here
@@ -211,49 +226,50 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 			Message msg;
 			msg = Message.obtain();
 			msg.what = 0;
-			try {			
+			try {
 				EnvironmentController.getInstance().retrieve();
-				if(!FreedomoticController.getInstance().initStompClient())
-				{	
+				if (FreedomoticController.getInstance().initStompClient() != EnvironmentController.CONNECTED) {
 					msg = Message.obtain();
 					msg.what = 2;
-					Bundle data = new Bundle();				
-						data.putString("msg",
-								"There is a problem with the Broker settings. Review your preferences and/or network");					
+					Bundle data = new Bundle();
+					data.putString(
+							"msg",
+							"There is a problem with the Broker settings. Review your preferences and/or network");
 				}
-									
+
 			} catch (Exception e) {
-				if (EnvironmentController.getInstance().getEnvironment()==null)
-				{
+				if (EnvironmentController.getInstance().getEnvironment() == null) {
 					msg = Message.obtain();
 					msg.what = 2;
-					Bundle data = new Bundle();				
-						data.putString("msg",
-							"Cannot get the data due to: " + e.getMessage());				
-					
+					Bundle data = new Bundle();
+					data.putString("msg",
+							"Cannot get the data due to: " + e.getMessage());
+
 					msg.setData(data);
 				}
 			}
 			return msg;
 		}
+
 		// can use UI thread here
 		protected void onPostExecute(final Message msg) {
 			switch (msg.what) {
 			case 0:
-				//refreshMasterFragmentView();
+				// refreshMasterFragmentView();
 				break;
-			case 1:								
+			case 1:
 				break;
 			case 2:
 				// Error.
 				// TODO:
-				if (msg.getData().getString("msg")!="")
+				if (msg.getData().getString("msg") != "")
 					alertDialog.setMessage(msg.getData().getString("msg"));
 				else
-					alertDialog.setMessage("Review your preferences and/or network");
-				alertDialog.show();							
+					alertDialog
+							.setMessage("Review your preferences and/or network");
+				alertDialog.show();
 				break;
-			default:			
+			default:
 				break;
 
 			}
@@ -263,18 +279,14 @@ public  class MainActivity extends  BaseMultiPanelActivity implements
 		}
 	}
 
-	public void onObjectSelected(String objName, Fragment sender) {		
-		Fragment fragment= ObjectViewerFragment.newInstance(objName);
-    	setDetailsOrMasterFragment(fragment,true);    										
-	}
-	
-	
-	//not needed
-	public boolean isDualPanel()
-	{
-		return super.isDualPanel();		
+	public void onObjectSelected(String objName, Fragment sender) {
+		Fragment fragment = ObjectViewerFragment.newInstance(objName);
+		setDetailsOrMasterFragment(fragment, true);
 	}
 
+	// not needed
+	public boolean isDualPanel() {
+		return super.isDualPanel();
+	}
 
-	   
 }

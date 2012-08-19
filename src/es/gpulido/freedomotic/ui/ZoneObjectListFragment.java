@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ListView;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
+import es.gpulido.freedomotic.ui.base.SelectableObjectListFragment;
 
 
 

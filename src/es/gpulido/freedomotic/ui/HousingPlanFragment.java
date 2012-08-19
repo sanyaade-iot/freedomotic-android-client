@@ -45,6 +45,7 @@ import com.actionbarsherlock.view.MenuItem;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.EnvironmentController;
 import es.gpulido.freedomotic.api.FreedomoticController;
+import es.gpulido.freedomotic.ui.base.SelectableObjectFragment;
 import es.gpulido.freedomotic.util.DrawableElement;
 import es.gpulido.freedomotic.util.DrawableObject;
 import es.gpulido.freedomotic.util.DrawableRoom;
@@ -89,14 +90,14 @@ import es.gpulido.freedomotic.util.DrawingUtils;
 	@Override
 	public void onResume() {
 		super.onResume();
-		FreedomoticController.getInstance().addObserver(this);
+		//DELETE: FreedomoticController.getInstance().addObserver(this);
 		EnvironmentController.getInstance().addObserver(this);
 	};
 
 	@Override
 	public void onPause() {
-		FreedomoticController.getInstance().deleteObserver(this);
-		EnvironmentController.getInstance().addObserver(this);
+		//DELETE: FreedomoticController.getInstance().deleteObserver(this);
+		EnvironmentController.getInstance().deleteObserver(this);
 		super.onPause();
 	};
 

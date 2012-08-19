@@ -13,8 +13,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-<ListView android:id="@+id/list_behaviors"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:listSelector="@drawable/selectable_background_freedomotic"/>   
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Medium Text"
+        android:background="@color/grey_freedomotic"
+        android:textColor="@color/background_freedomotic"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/list_behaviors"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:listSelector="@drawable/selectable_background_freedomotic" />
+
 </LinearLayout>

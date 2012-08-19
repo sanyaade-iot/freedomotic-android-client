@@ -17,6 +17,7 @@
 -->
 
 <resources>
+     <color name="transparent">#00000000</color>
     <color name="pressed_freedomotic">#CC88ae20</color>
     <color name="green_freedomotic">#ff89ae20</color>
     <color name="grey_freedomotic">#ff505050</color>

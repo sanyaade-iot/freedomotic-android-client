@@ -12,11 +12,19 @@ package es.gpulido.freedomotic.api;
 
 import it.freedomotic.model.environment.Environment;
 import it.freedomotic.model.environment.Zone;
+import it.freedomotic.model.object.Behavior;
+import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.EnvObject;
+import it.freedomotic.model.object.ListBehavior;
+import it.freedomotic.model.object.RangedIntBehavior;
+import it.freedomotic.reactions.Payload;
+import it.freedomotic.reactions.Statement;
 import it.freedomotic.restapi.server.interfaces.EnvironmentResource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -25,10 +33,12 @@ import org.restlet.resource.ClientResource;
 
 import es.gpulido.freedomotic.ui.preferences.Preferences;
 
-public class EnvironmentController  extends Observable implements Observer {
+public class EnvironmentController  extends Observable {
 
 	public static final int REST_ERROR = 1;
-	public static final int CONNECTED= 2;
+	public static final int STOMP_LOGIN_ERROR = 2;
+	public static final int STOMP_CONNECT_FAILED_ERROR = 3;
+	public static final int CONNECTED= 4;
 	
 	private static EnvironmentController INSTANCE=null;  //Singleton reference
 	private static EnvironmentResource resourceEnvironment;	
@@ -71,6 +81,8 @@ public class EnvironmentController  extends Observable implements Observer {
      	
 	public void retrieve() throws Exception
 	{		
+		//TODO: at this moment all data is refreshed.
+		// We could just add another method to refresh already loaded data
 		freedomEnvironment =resourceEnvironment.retrieveEnvironment();
 		if (freedomEnvironment != null)
 		{
@@ -117,13 +129,61 @@ public class EnvironmentController  extends Observable implements Observer {
 		
 	}
 
-	public void update(Observable observable, Object data) {
-		// If the data has changed
-		setChanged();
-		EnvironmentController.getInstance().notifyObservers();
-		
-	}
+	//Updates an existing EnvObject with the data from a message payload 
+	public  void updateObject(Payload payload)
+	{
+		EnvObject obj = EnvironmentController.getInstance().getObject(payload.getStatements("object.name").get(0).getValue());		
+		if (obj!= null)
+		{
+			Iterator it = payload.iterator();
+	        while (it.hasNext()) {
+	            Statement st = (Statement) it.next();	            
+				if (st.getAttribute().equalsIgnoreCase("object.currentRepresentation"))
+				{    			
+					if (obj.getCurrentRepresentationIndex() !=  Integer.parseInt(st.getValue()))
+					{
+						obj.setCurrentRepresentation(Integer.parseInt(st.getValue()));
+						setChanged();
+					}    				    				
+				}    			    			    			
+				else if (!st.getAttribute().equalsIgnoreCase("object.name"))
+				{ 
+					Behavior bh = obj.getBehavior(st.getAttribute());							 
+					if (bh instanceof BooleanBehavior)
+					{
+						boolean bl = Boolean.parseBoolean(st.getValue()); 
+						if (bl !=((BooleanBehavior)bh).getValue())
+						{
+							((BooleanBehavior) bh).setValue(bl);
+							setChanged();
+						}
 	
+					}
+					else if (bh instanceof RangedIntBehavior)
+					{
+						int val = Integer.parseInt(st.getValue());
+						if (val !=((RangedIntBehavior)bh).getValue())
+						{
+							((RangedIntBehavior) bh).setValue(val);
+							setChanged();    						
+						}								 								 
+					}
+					else if (bh instanceof ListBehavior)
+					{
+						String val = st.getValue();
+						if (!val.equals(((ListBehavior)bh).getSelected()))
+							((ListBehavior)bh).setSelected(val);
+							setChanged();
+					}
+				}    		
+			}
+			if (hasChanged())
+			{
+				notifyObservers(obj);
+			}
+		}
+	}
+			
 	
 }
 

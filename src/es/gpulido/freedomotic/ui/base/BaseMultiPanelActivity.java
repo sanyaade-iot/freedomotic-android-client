@@ -33,7 +33,6 @@ public abstract class BaseMultiPanelActivity extends BaseActivity {
 		if (mDualPane) {
 			FrameLayout test = (FrameLayout) findViewById(R.id.details);
 			if (proportion == 0) {
-
 				test.setVisibility(View.GONE);
 			} else {
 				test.setVisibility(View.VISIBLE);

@@ -1,7 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--Style to be aplyed on the rooms tab  -->
-    <style name="CustomTitlePageIndicator" parent="@style/Theme.freedomotic">        
+    <style name="CustomTitlePageIndicator" parent="@style/Theme.Sherlock.Light">        
         <item name="android:background">@color/grey_freedomotic</item> -->        
         <item name="footerColor">@color/green_freedomotic</item>
         <item name="footerLineHeight">1dp</item>
@@ -31,5 +31,9 @@
     <!-- used for more complex list items, e.g. those with stars aligned to the top-right -->
 
     <style name="ListItemContainer" parent="style/ListItemContainerBase" />
+    
+     <style name="Freedomotic_AlertDialog" parent="@style/Theme.freedomotic">
+     	<item name="android:textColor">@color/green_freedomotic</item>     	     			                         
+    </style>
     
 </resources>

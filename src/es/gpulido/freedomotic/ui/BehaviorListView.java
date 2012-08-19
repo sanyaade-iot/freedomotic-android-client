@@ -20,6 +20,7 @@ import it.freedomotic.model.object.BooleanBehavior;
 import it.freedomotic.model.object.EnvObject;
 import it.freedomotic.model.object.ListBehavior;
 import it.freedomotic.model.object.RangedIntBehavior;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
@@ -36,11 +37,10 @@ import android.widget.ToggleButton;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.FreedomoticController;
 
-public class BehaviorListView extends LinearLayout{
+@TargetApi(14) public class BehaviorListView extends LinearLayout{
 	ViewHolder holder;
 	Behavior m_behavior;
-	EnvObject m_obj; // the envobject where the behavior belongs
-	
+	EnvObject m_obj; // the envobject where the behavior belongs	
 	public BehaviorListView(Context context, AttributeSet args)
 	{
 		super(context, args);		
@@ -49,11 +49,10 @@ public class BehaviorListView extends LinearLayout{
 	
 	public BehaviorListView(Context context,Behavior behavior,EnvObject obj) {
 		super(context);
-		// TODO Auto-generated constructor stub
+		
 		addView(inflate(context, R.layout.row_behavior, null));
 		m_obj= obj;
 		setBehavior(behavior);
-		//FreedomController.getInstance().addObserver(this);
 		
     	if (m_behavior instanceof BooleanBehavior)
     	{
@@ -75,27 +74,34 @@ public class BehaviorListView extends LinearLayout{
 		}
 		else if (m_behavior instanceof RangedIntBehavior)
 		{
+			
 			OnSeekBarChangeListener mySeekBarChangeListener = new OnSeekBarChangeListener() {
 				
 				public void onStopTrackingTouch(SeekBar seekBar) {
-					// TODO Auto-generated method stub
-					
+					//TODO: we should try not to receive messages from the queue from objects being updated by the user
+					int progress= seekBar.getProgress();
+					RangedIntBehavior beh = (RangedIntBehavior)m_behavior; 
+					String value = String.valueOf(progress+beh.getMin());
+					String object =m_obj.getName();
+					String behavior = m_behavior.getName();
+					FreedomoticController.getInstance().changeBehavior(object, behavior, value);				
 				}
 				
 				public void onStartTrackingTouch(SeekBar seekBar) {
-					// TODO Auto-generated method stub
+					// TODO Auto-generated method stub							
 					
 				}
 				
 				public void onProgressChanged(SeekBar seekBar, int progress,
 						boolean fromUser) {
-					if (fromUser){
-						RangedIntBehavior beh = (RangedIntBehavior)m_behavior; 
-						String value = String.valueOf(progress+beh.getMin());
-						String object =m_obj.getName();
-						String behavior = m_behavior.getName();
-						FreedomoticController.getInstance().changeBehavior(object, behavior, value);
-					}
+//					if (fromUser){
+//						//TODO: we should try not to receive messages from the queue from objects being updated by the user
+//						RangedIntBehavior beh = (RangedIntBehavior)m_behavior; 
+//						String value = String.valueOf(progress+beh.getMin());
+//						String object =m_obj.getName();
+//						String behavior = m_behavior.getName();
+//						FreedomoticController.getInstance().changeBehavior(object, behavior, value);
+//					}
 
 				}
 			};
@@ -132,9 +138,7 @@ public class BehaviorListView extends LinearLayout{
 	    	setData();
 			    		    		    		    		    		    
 	}
-	
-	
-	
+			
 	 public void setData() {    	
 	      		
 		 if (holder == null) {					 	
@@ -143,7 +147,6 @@ public class BehaviorListView extends LinearLayout{
 				holder.seekBar=(SeekBar)findViewById(R.id.seekBar1);
 				holder.spinner=(Spinner)findViewById(R.id.spinner1);
 				holder.button=(ToggleButton)findViewById(R.id.toggleButton1);			
-			
 			} 
 			holder.textView.setText(m_behavior.getName());
 			// Modify the layout 		
@@ -157,12 +160,11 @@ public class BehaviorListView extends LinearLayout{
 				//holder.imageView.setImageResource(R.drawable.no);			
 			}
 			else if (m_behavior instanceof RangedIntBehavior)
-			{
-				//We should translate the min max to the 0..max of the seekbar
-				RangedIntBehavior beh = (RangedIntBehavior)m_behavior; 
-				holder.seekBar.setMax(beh.getMax()-beh.getMin());
-				holder.seekBar.setVisibility(View.VISIBLE);
-				holder.seekBar.setProgress(beh.getValue());
+			{							
+					RangedIntBehavior beh = (RangedIntBehavior)m_behavior; 				
+					holder.seekBar.setMax(beh.getMax()-beh.getMin());
+					holder.seekBar.setVisibility(View.VISIBLE);
+					holder.seekBar.setProgress(beh.getValue());
 				//holder.imageView.setImageResource(R.drawable.ok);
 			}
 			else if(m_behavior instanceof ListBehavior) //it is a Multievaluated Behavior
@@ -182,38 +184,38 @@ public class BehaviorListView extends LinearLayout{
 		public ToggleButton button;
 		public SeekBar seekBar;
 		public Spinner spinner;
-		public TextView textView;
+		public TextView textView;		
 	}
 
-	private class SetBehaviorValue extends AsyncTask<Behavior, Void, Behavior> {
-	    	
-	    	//private final ProgressDialog dialog = new ProgressDialog(Main.this);
-	    	// can use UI thread here    	
-//	    	protected void onPreExecute() {    	
-//	    		this.dialog.setMessage("Selecting data...");    	
-//	    	    this.dialog.show();    	
-//	    	    }
-
-	    	protected Behavior doInBackground(Behavior... params) {
-	    		m_behavior = params[0];
-	    		return m_behavior;	    
-	  	      }
-	    	 
-		      // can use UI thread here
-		      protected void onPostExecute(final Behavior result) {
-		         setBehavior(result);	         
-		      }
-	
-		   }
-
-//	@Override
-//	public void update(Observable observable, Object data) {
-//		// TODO Auto-generated method stub
-//		if (((Behavior)data).equals((Behavior)m_behavior))
-//			new SetBehaviorValue().execute((Behavior)data);
-//			//setBehavior((Behavior)data);
-//			
-//	}   
+//	private class SetBehaviorValue extends AsyncTask<Behavior, Void, Behavior> {
+//	    	
+//	    	//private final ProgressDialog dialog = new ProgressDialog(Main.this);
+//	    	// can use UI thread here    	
+////	    	protected void onPreExecute() {    	
+////	    		this.dialog.setMessage("Selecting data...");    	
+////	    	    this.dialog.show();    	
+////	    	    }
+//
+//	    	protected Behavior doInBackground(Behavior... params) {
+//	    		m_behavior = params[0];
+//	    		return m_behavior;	    
+//	  	      }
+//	    	 
+//		      // can use UI thread here
+//		      protected void onPostExecute(final Behavior result) {
+//		         setBehavior(result);	         
+//		      }
+//	
+//		   }
+//
+////	@Override
+////	public void update(Observable observable, Object data) {
+////		// TODO Auto-generated method stub
+////		if (((Behavior)data).equals((Behavior)m_behavior))
+////			new SetBehaviorValue().execute((Behavior)data);
+////			//setBehavior((Behavior)data);
+////			
+////	}   
 	
 	
 	

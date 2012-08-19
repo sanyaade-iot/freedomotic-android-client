@@ -23,7 +23,7 @@ public abstract class BaseActivity  extends SherlockFragmentActivity
 	        // with this one inside the frame.
 	        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 	        ft.replace(targetSlot, fragment);	        
-	        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+	        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 	        if (addToBackstack)
 	        	ft.addToBackStack(null);
 	        ft.commit();
@@ -36,7 +36,7 @@ public abstract class BaseActivity  extends SherlockFragmentActivity
 	        // with this one inside the frame.
 	        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 	        ft.add(targetSlot, fragment);	        
-	        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+	        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 	        ft.commit();
 					
 		}		
