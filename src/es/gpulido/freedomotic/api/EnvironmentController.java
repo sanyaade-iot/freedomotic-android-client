@@ -178,7 +178,7 @@ public class EnvironmentController  extends Observable {
 				}    		
 			}
 			if (hasChanged())
-			{
+			{				
 				notifyObservers(obj);
 			}
 		}

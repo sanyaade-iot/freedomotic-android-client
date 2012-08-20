@@ -136,10 +136,22 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 		
 		
 		//Add the observer to the environment changes
-		EnvironmentController.getInstance().addObserver(this);		
+		//EnvironmentController.getInstance().addObserver(this);		
 		initialize();
 		return vi;
 	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();		
+		EnvironmentController.getInstance().addObserver(this);
+	};
+
+	@Override
+	public void onPause() {
+		EnvironmentController.getInstance().deleteObserver(this);
+		super.onPause();
+	};
 	private class setAdapterTask extends AsyncTask<Void,Void,Void>{
 	      protected Void doInBackground(Void... params) {
 	            return null;
@@ -204,8 +216,7 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 		}
     }
 
-	public void update(Observable observable, Object data) {
-		// TODO Auto-generated method stub
+	public void update(Observable observable, Object data) { 
 		initialize();		
 		getActivity().runOnUiThread(new Runnable() {
 		    public void run() {

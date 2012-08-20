@@ -31,11 +31,11 @@ public class BehaviorsAdapter extends ArrayAdapter<Behavior> {
 		this.envObject=object;		
 	}
 
-
+	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) 
     {
             if (convertView == null) {
-                    // Create a new view
+                    // Create a new view            	
             	View output = new BehaviorListView(getContext(), getItem(position),envObject); 	
                 return output;
             } else {

@@ -79,8 +79,9 @@ import es.gpulido.freedomotic.util.DrawingUtils;
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
 	public void update(Observable observable, Object data) {
-		if (observable.equals(FreedomoticController.getInstance()))
+		if (observable.equals(EnvironmentController.getInstance()))
 			myview.postInvalidate();
 		else
 			myview.initialize();
@@ -90,13 +91,11 @@ import es.gpulido.freedomotic.util.DrawingUtils;
 	@Override
 	public void onResume() {
 		super.onResume();
-		//DELETE: FreedomoticController.getInstance().addObserver(this);
 		EnvironmentController.getInstance().addObserver(this);
 	};
 
 	@Override
 	public void onPause() {
-		//DELETE: FreedomoticController.getInstance().deleteObserver(this);
 		EnvironmentController.getInstance().deleteObserver(this);
 		super.onPause();
 	};

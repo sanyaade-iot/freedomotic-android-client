@@ -99,7 +99,6 @@ public class ZoneObjectListFragment extends SelectableObjectListFragment {
 		mCurCheckPosition = position;
 		getListView().setItemChecked(mCurCheckPosition, true);
 		mListener.onObjectSelected(((EnvObject)getListAdapter().getItem(mCurCheckPosition)).getName(),this);
-		//selectItem();
 	}
 
 	

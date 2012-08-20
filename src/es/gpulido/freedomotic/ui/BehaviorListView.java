@@ -37,7 +37,7 @@ import android.widget.ToggleButton;
 import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.api.FreedomoticController;
 
-@TargetApi(14) public class BehaviorListView extends LinearLayout{
+public class BehaviorListView extends LinearLayout{
 	ViewHolder holder;
 	Behavior m_behavior;
 	EnvObject m_obj; // the envobject where the behavior belongs	
@@ -59,11 +59,12 @@ import es.gpulido.freedomotic.api.FreedomoticController;
     		ToggleButton.OnClickListener myToggleOnClickListener = new OnClickListener() {
 
     			public void onClick(View v) {					
+    				
     				ToggleButton tg = (ToggleButton)v;					  
     				boolean value = tg.isChecked();
     				String valueString = "false";
     				if (value) valueString = "true";
-
+    				
     				String object =m_obj.getName();
     				String behavior = m_behavior.getName();
     				FreedomoticController.getInstance().changeBehavior(object, behavior, valueString);
