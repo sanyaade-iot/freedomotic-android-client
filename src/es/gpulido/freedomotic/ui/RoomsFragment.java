@@ -25,7 +25,7 @@ import es.gpulido.freedomotic.api.EnvironmentController;
 //Thanks to http://tamsler.blogspot.com/2011/11/android-viewpager-and-fragments-part-ii.html
 public class RoomsFragment extends SherlockFragment implements Observer{
 	public static int NUM_ITEMS = 0;	
-	MyAdapter mAdapter;
+	RoomsAdapter mAdapter;
 	ViewPager mPager;
 	static boolean  mInitialized = false;	
 	TitlePageIndicator titleIndicator;
@@ -110,7 +110,7 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 		View vi = inflater.inflate(R.layout.fragment_roomselecter, container,false);
 		
 		mPager = (ViewPager) vi.findViewById(R.id.room_panel_pager);
-		mAdapter = new MyAdapter(getSherlockActivity().getSupportFragmentManager());		
+		mAdapter = new RoomsAdapter(getSherlockActivity().getSupportFragmentManager());		
 		new setAdapterTask().execute();		
 		
 		// Bind the ViewPager to ViewPagerTabs
@@ -126,17 +126,13 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 			}
 
 			public void onPageSelected(int currentIndex) {				
-				ZoneObjectListFragment zoneFragment = ((MyAdapter)mPager.getAdapter()).getFragment(currentIndex);			
+				ZoneObjectListFragment zoneFragment = ((RoomsAdapter)mPager.getAdapter()).getFragment(currentIndex);			
 				if (zoneFragment != null)
 					zoneFragment.selectItem();				
 			}
 			
 			
-		});
-		
-		
-		//Add the observer to the environment changes
-		//EnvironmentController.getInstance().addObserver(this);		
+		});		
 		initialize();
 		return vi;
 	}
@@ -171,15 +167,15 @@ public class RoomsFragment extends SherlockFragment implements Observer{
 	}
 	
 		
-    public static class MyAdapter extends FragmentPagerAdapter {
+    public static class RoomsAdapter extends FragmentPagerAdapter {
     	
-        public MyAdapter (FragmentManager fm) {        	
+        public RoomsAdapter (FragmentManager fm) {        	
         	super(fm);        	
         }    
 		@Override
         public int getCount() {			
 			if (RoomsFragment.mInitialized){			
-				return EnvironmentController.getInstance().getRooms().size();
+				return EnvironmentController.getInstance().getNonEmptyRooms().size();
 			}
 			return 0;
         }
@@ -201,7 +197,7 @@ public class RoomsFragment extends SherlockFragment implements Observer{
         @Override
         public CharSequence getPageTitle(int position) {
 			// TODO Auto-generated method stub			
-			return EnvironmentController.getInstance().getRoom(position).getName().toUpperCase();
+			return EnvironmentController.getInstance().getNonEmptyRoom(position).getName().toUpperCase();
 		}
 		
 		@Override

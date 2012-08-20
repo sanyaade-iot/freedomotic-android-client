@@ -44,6 +44,8 @@ public class EnvironmentController  extends Observable {
 	private static EnvironmentResource resourceEnvironment;	
 	private Environment freedomEnvironment;
 	private ArrayList<Zone> rooms;
+	//variable to store rooms that doesn't have objects asigned
+	private ArrayList<Zone> nonEmptyRooms;
 	private HashMap<String,EnvObject> freedomObjectsDictionary;
 	private int roomsSize=0;
 		
@@ -86,14 +88,18 @@ public class EnvironmentController  extends Observable {
 		freedomEnvironment =resourceEnvironment.retrieveEnvironment();
 		if (freedomEnvironment != null)
 		{
-			rooms= new ArrayList<Zone>();
+			rooms= new ArrayList<Zone>();			
+			nonEmptyRooms= new ArrayList<Zone>();
 			freedomObjectsDictionary = new HashMap<String, EnvObject>();
 			for(Zone z: getZones())
 			{
 				if (z.isRoom())
-				{
+				{				
 					rooms.add(z);
+					if (z.getObjects().size()!= 0)
+						nonEmptyRooms.add(z);
 				}
+				
 				for (EnvObject obj: z.getObjects())
 					freedomObjectsDictionary.put(obj.getName(), obj);
 			}
@@ -116,8 +122,15 @@ public class EnvironmentController  extends Observable {
 	public ArrayList<Zone> getRooms()
 	{					
 		return rooms;		
+	}	
+	public ArrayList<Zone> getNonEmptyRooms()
+	{					
+		return nonEmptyRooms;		
 	}
-	
+	public Zone getNonEmptyRoom(int roomNumber)
+	{					
+		return nonEmptyRooms.get(roomNumber);		
+	}
 	public Zone getRoom(int roomNumber)
 	{		
 		return rooms.get(roomNumber);		
