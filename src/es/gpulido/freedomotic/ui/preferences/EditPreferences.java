@@ -10,7 +10,14 @@
  ******************************************************************************/
 package es.gpulido.freedomotic.ui.preferences;
 
+import java.util.List;
+
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
@@ -18,12 +25,22 @@ import es.gpulido.freedomotic.R;
 import es.gpulido.freedomotic.ui.MainActivity;
 
 public class EditPreferences extends SherlockPreferenceActivity {
-	 @Override
+	
+	@SuppressWarnings("deprecation")
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		 setTheme(MainActivity.THEME);		 
-		 super.onCreate(savedInstanceState);
-		 //TODO move the string to a resource
+		 super.onCreate(savedInstanceState);		 
 		 getSupportActionBar().setTitle("Preferences");
-		 addPreferencesFromResource(R.xml.preferences);
+		 if (Build.VERSION.SDK_INT<Build.VERSION_CODES.HONEYCOMB) {
+			 addPreferencesFromResource(R.xml.preferences_preics);
+		 }
     }
+	 	 	 
+	  @Override
+	  public void onBuildHeaders(List<Header> target) {
+	    loadHeadersFromResource(R.xml.preference_headers, target);
+	  }
+	  
+	  
 }

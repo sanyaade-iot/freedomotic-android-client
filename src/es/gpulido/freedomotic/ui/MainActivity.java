@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -80,7 +81,7 @@ public class MainActivity extends BaseMultiPanelActivity implements
 				new ContextThemeWrapper(this, R.style.Freedomotic_AlertDialog));
 		// AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(R.string.error_dialog_title)
-				.setCancelable(false)
+				.setCancelable(false)				
 				.setPositiveButton(getString(R.string.error_dialog_button),
 						new DialogInterface.OnClickListener() {
 
@@ -119,6 +120,12 @@ public class MainActivity extends BaseMultiPanelActivity implements
 	}
 
 	private void readSettings() {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+			PreferenceManager.setDefaultValues(this, R.xml.preferences_preics,
+					false);
+		else
+			PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		Preferences.create(prefs);
@@ -126,7 +133,7 @@ public class MainActivity extends BaseMultiPanelActivity implements
 	}
 
 	private void initControllers() {
-		// Init RestResource
+		// Init RestResource		
 		switch (EnvironmentController.getInstance().init()) {
 		case EnvironmentController.STOMP_CONNECT_FAILED_ERROR:
 			Toast.makeText(
@@ -223,56 +230,40 @@ public class MainActivity extends BaseMultiPanelActivity implements
 
 		// automatically done on worker thread (separate from UI thread)
 		protected Message doInBackground(Object... params) {
-			Message msg;
-			msg = Message.obtain();
-			msg.what = 0;
-			try {
-				EnvironmentController.getInstance().retrieve();
-				if (FreedomoticController.getInstance().initStompClient() != EnvironmentController.CONNECTED) {
-					msg = Message.obtain();
-					msg.what = 2;
-					Bundle data = new Bundle();
-					data.putString(
-							"msg",
-							"There is a problem with the Broker settings. Review your preferences and/or network");
-				}
+			Message msg = Message.obtain();
 
-			} catch (Exception e) {
-				if (EnvironmentController.getInstance().getEnvironment() == null) {
-					msg = Message.obtain();
-					msg.what = 2;
-					Bundle data = new Bundle();
-					data.putString("msg",
-							"Cannot get the data due to: " + e.getMessage());
+			msg.what = EnvironmentController.getInstance().retrieve();
+			if (msg.what == EnvironmentController.CONNECTED)
+				msg.what = FreedomoticController.getInstance()
+						.initStompClient();
 
-					msg.setData(data);
-				}
-			}
 			return msg;
 		}
 
 		// can use UI thread here
 		protected void onPostExecute(final Message msg) {
+			String alertMessage="";
 			switch (msg.what) {
-			case 0:
-				// refreshMasterFragmentView();
+			
+			case EnvironmentController.REST_ERROR:
+				alertMessage = "Can't retrieve objects.\nEnsure RestApi plugin is installed on the core." +
+								"\nReview your server preferences and/or network";
 				break;
-			case 1:
+			case EnvironmentController.STOMP_CONNECT_FAILED_ERROR:
+				alertMessage = "Can't connect with the Freedomotic core.\nReview your broker preferences and/or network";
 				break;
-			case 2:
-				// Error.
-				// TODO:
-				if (msg.getData().getString("msg") != "")
-					alertDialog.setMessage(msg.getData().getString("msg"));
-				else
-					alertDialog
-							.setMessage("Review your preferences and/or network");
-				alertDialog.show();
+			case EnvironmentController.STOMP_LOGIN_ERROR:
+				alertMessage = "Login error.\nReview your user / pass preferences";
 				break;
-			default:
+			case EnvironmentController.CONNECTED:
 				break;
-
 			}
+			if (alertMessage != "")
+			{		
+				alertDialog.setMessage(alertMessage);			
+				alertDialog.show();
+				
+			}															
 			setSupportProgressBarIndeterminateVisibility(false);
 			refreshing = false;
 			invalidateOptionsMenu();

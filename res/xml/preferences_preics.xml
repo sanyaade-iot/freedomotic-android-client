@@ -10,16 +10,14 @@
       Gabriel Pulido - initial API and implementation
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <PreferenceCategory android:title="Basic" >
+    <PreferenceCategory android:title="Connection" >
         <EditTextPreference
             android:key="server_ip"
             android:summary="Freedom Server IP"
-            android:title="Freedom Server IP" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="Advanced" >
-        <SwitchPreference
+            android:title="Freedom Server IP" />  
+        <CheckBoxPreference
             android:defaultValue="true"
+            android:title="Advanced" 
             android:disableDependentsState="true"
             android:key="use_default"
             android:summary="Use default values" />
