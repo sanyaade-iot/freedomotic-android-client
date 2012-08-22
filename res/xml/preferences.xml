@@ -15,13 +15,12 @@
         <EditTextPreference
             android:key="server_ip"
             android:summary="Freedom Server IP"
-            android:title="Freedom Server IP" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="Advanced" >
+            android:title="Freedom Server IP" />  
         <SwitchPreference
+            android:key="use_default"
             android:defaultValue="true"
             android:disableDependentsState="true"
-            android:key="use_default"
+            android:title="Advanced"             
             android:summary="Use default values" />
         <EditTextPreference
             android:defaultValue="8111"
